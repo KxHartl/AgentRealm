@@ -1,0 +1,197 @@
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" style="height:64px;margin-right:32px"/>
+
+# explain git comands, diffrents between git clone, git fork? what i need to know before starting to work with git and othre peope and ai agnets
+
+Git clone creates a local copy of a repository on your machine, keeping it linked to the remote for syncing changes via push and pull. Git fork, specific to platforms like GitHub, creates a full independent copy under your account on the server, ideal for contributing to projects without direct access.[^1_1][^1_2]
+
+## Key Git Commands
+
+Start with basics like `git init` to create a repo, `git add` to stage changes, and `git commit -m "message"` to save them locally. Use `git status` often to check your working directory, `git log --oneline` for commit history, and `git branch` to manage branches. For remotes, `git remote -v` lists connections, `git fetch` updates info without merging, and `git pull` fetches and merges.[^1_3][^1_4]
+
+## Clone vs Fork Differences
+
+| Aspect | Git Clone | Git Fork |
+| :-- | :-- | :-- |
+| Location | Local machine copy | Server-side copy on your GitHub account [^1_1][^1_2] |
+| Ownership | No new ownership; linked to original [^1_5] | Full control over your copy [^1_1] |
+| Syncing | Direct push/pull if permitted [^1_1] | Use pull requests to contribute back [^1_6] |
+| Use Case | Daily work on shared repo [^1_7] | Open-source contributions [^1_2] |
+
+Fork first, then clone your fork for local work.[^1_1]
+
+## Prep for Team and AI Collaboration
+
+Install Git and configure `git config --global user.name` and `user.email` for identity. Learn branching: create feature branches with `git checkout -b feature/name`, work there, and merge via pull requests (PRs) to avoid main branch chaos. Always pull from main before starting (`git pull origin main`), commit small changes with descriptive messages, and resolve conflicts by editing files then committing.[^1_4][^1_8][^1_9][^1_10][^1_11]
+
+For teams, follow a workflow: clone shared repo, branch per task, push branches, open PRs for review. With AI agents, use separate branches or Git worktrees (`git worktree add ../agent-task branch-name`) so agents work isolated, then review and merge their PRs manually. Avoid force pushes on shared branches and sync daily to minimize conflicts.[^1_12][^1_8][^1_13][^1_14][^1_11]
+<span style="display:none">[^1_15][^1_16][^1_17][^1_18][^1_19][^1_20][^1_21][^1_22][^1_23][^1_24][^1_25][^1_26][^1_27][^1_28][^1_29][^1_30]</span>
+
+<div align="center">⁂</div>
+
+[^1_1]: https://www.theserverside.com/answer/Git-fork-vs-clone-Whats-the-difference
+
+[^1_2]: https://www.geeksforgeeks.org/git/difference-between-fork-and-clone-in-github/
+
+[^1_3]: https://moltbotden.com/learn/git-for-agents
+
+[^1_4]: https://www.linkedin.com/posts/narendra-kumar-2402b4202_git-github-gitcommands-activity-7446033524085764096-theU
+
+[^1_5]: https://graphite.com/guides/git-clone-vs-fork
+
+[^1_6]: https://github.com/orgs/community/discussions/35849
+
+[^1_7]: https://www.baeldung.com/git-fork-vs-clone
+
+[^1_8]: https://dev.to/1303liz/git-github-a-beginners-guide-to-collaboration-and-version-control-5fcj
+
+[^1_9]: https://www.geeksforgeeks.org/git/best-git-practices-to-follow-in-teams/
+
+[^1_10]: https://www.sitepoint.com/git-techniques-to-know-before-you-join-a-team/
+
+[^1_11]: https://eastondev.com/blog/en/posts/dev/20251124-git-team-collaboration-best-practices/
+
+[^1_12]: https://vickysteeves.gitlab.io/collaborating-with-git/collaborating-with-git.html
+
+[^1_13]: https://nx.dev/blog/git-worktrees-ai-agents
+
+[^1_14]: https://github.blog/ai-and-ml/automate-repository-tasks-with-github-agentic-workflows/
+
+[^1_15]: https://stackoverflow.com/questions/7057194/what-is-the-difference-between-forking-and-cloning-on-github
+
+[^1_16]: https://www.reddit.com/r/learnprogramming/comments/ycge7h/is_there_a_difference_between_forking_a_repo_and/
+
+[^1_17]: https://www.ehmiiz.se/posts/gh-clone-vs-fork/
+
+[^1_18]: https://www.youtube.com/watch?v=k0DWmw1nYnM
+
+[^1_19]: https://www.turbotype.co/blog/essential-git-commands
+
+[^1_20]: https://uoftcoders.github.io/studyGroup/lessons/git/collaboration/lesson/
+
+[^1_21]: https://www.mindstudio.ai/blog/parallel-ai-coding-agents-git-worktrees/
+
+[^1_22]: https://github.com/github/copilot-cli/issues/1389
+
+[^1_23]: https://github.com/dustland/agentx
+
+[^1_24]: https://github.com/beloveddie/collaborative_human_ai_workflow_system
+
+[^1_25]: https://dev.to/gladyspascual/a-beginner-s-guide-to-using-git-when-working-with-a-team-for-the-first-time-1hba
+
+[^1_26]: https://inventivehq.com/blog/git-workflows-ai-coding-assistants
+
+[^1_27]: https://dev.to/jtreeves/git-best-practices-for-team-collaboration-3bf0
+
+[^1_28]: https://www.robinwieruch.de/git-team-workflow/
+
+[^1_29]: https://dev.to/igor_grieder/agentic-git-workflow-hig
+
+[^1_30]: https://www.docs.inductiveautomation.com/docs/8.3/tutorials/version-control-guide/best-practices-for-team-environments
+
+
+---
+
+# ok, my goal is to create repo template on github. my personal private repo agentRealm which is template of worksapace for working on projects/seminars with agents. i need one way to directly edit this git and many other repos which will at firs be copy of this repo and then become other repo for specific project. explan to me best pactices and how to do this
+
+For your goal, the best setup is: keep `agentRealm` as a **private template repository** for your standard workspace, then create each new project repo with GitHub’s “Use this template,” not with fork. A repository created from a template gets the same files and structure, but its history is unrelated to the template, which is good for new seminars and project work; GitHub also recommends branching over forking for regular collaborators, and says forking is better for outside contributors.[^2_1][^2_2]
+
+## Recommended model
+
+Think of `agentRealm` as your master scaffold, not as the place where actual project work happens. GitHub template repositories let you generate new repositories with the same files and directory structure, and optionally other branches, but the new repo starts separately rather than staying in a normal parent-child collaboration flow.[^2_1]
+
+That means your workflow should be: improve `agentRealm` when you want to improve the workspace itself, and create a fresh repo from it whenever you start a new seminar or project. Do **not** use fork for this, because a fork is meant more for contributing back to an existing repo, while “Use this template” is meant for starting a new repo quickly from starter code and structure.[^2_3][^2_2]
+
+## Structure to use
+
+Your `agentRealm` template should contain only reusable things: folder layout, README starter, `.gitignore`, agent instructions, issue and PR templates, labels/workflow docs, maybe starter scripts, and a clean branching policy document. GitHub recommends having a README, and repository best practices also mention useful supporting files like license, contribution guidance, code of conduct, and security guidance where relevant.[^2_4][^2_2]
+
+A practical layout for your case is to keep reusable operating rules in `.github/`, project docs in `docs/`, agent prompts or conventions in something like `agents/`, and actual work areas as neutral starter folders such as `src/`, `notes/`, `deliverables/`, and `archive/`. Keep it generic enough that a copied repo can become a seminar repo, coding repo, research repo, or writing repo without needing to delete half the template.[^2_5][^2_1]
+
+## How to work daily
+
+Use one repository per real project, and one branch per task. GitHub explicitly recommends regular collaborators use a single repository with branches and pull requests instead of forks, and protected branches can help keep `main` stable.[^2_2]
+
+Your day-to-day flow should be: create repo from template, clone it locally, create a feature branch, let yourself or an AI agent work only on that branch, review the diff, open a pull request, and merge into `main` only after checking the changes. Small pull requests, clear descriptions, and not committing directly to `main` make collaboration easier and safer.[^2_6][^2_7][^2_2]
+
+Here is the model I would use:
+
+
+| Repo type | Purpose | How you change it |
+| :-- | :-- | :-- |
+| `agentRealm` | Master workspace template | Edit manually when you want to improve the reusable system for future projects.[^2_1] |
+| `project-X` | Real project repo created from template | Work in branches, review with PRs, merge to `main`.[^2_2][^2_7] |
+| `project-Y` | Another real repo from same template | Independent from template history, can evolve freely.[^2_1] |
+
+## Editing template and child repos
+
+This is the part most people misunderstand: a repo created from a template is **not automatically linked** to the template for ongoing syncing. GitHub says branches created from a template have unrelated histories, so you cannot use normal pull requests or merges between them.[^2_1]
+
+So if you later improve `agentRealm`, those improvements do not automatically flow into `project-X`, `project-Y`, and others. Because of that, best practice is to split template content into two categories: stable reusable infrastructure and project-specific content; keep the reusable part small and durable so you rarely need big syncs later.[^2_8][^2_1]
+
+If you expect frequent updates from template to existing repos, you have three good options. First, keep the template minimal and copy updates manually when needed; this is simplest. Second, make a separate shared repo for common scripts/docs and include it as a Git submodule or subtree in project repos; that gives you a direct update path, but adds Git complexity. Third, use automation or a sync workflow designed for template-derived repos, but that is more advanced and worth doing only if you truly maintain many active repos from the same base.[^2_8][^2_2]
+
+For your case, the simplest strong setup is this: keep `agentRealm` minimal, and store frequently changing shared rules in a separate repo such as `agentRealm-core` or `agentRealm-docs`. Then each project can pull updates from that shared repo more cleanly than trying to “resync” a full template-derived repo.[^2_8][^2_1]
+
+## Working with AI agents
+
+With AI agents, the safest rule is one agent, one branch, one task. That keeps diffs reviewable and prevents an agent from touching unrelated files across your workspace, which is especially important when the repo also contains notes, instructions, and deliverables.[^2_9][^2_6]
+
+You should also define guardrails inside the template itself: a `CONTRIBUTING.md` that says agents must not commit to `main`, a PR template that asks what changed and how it was tested, and agent-specific instruction files that define allowed folders, naming rules, and commit style. This makes every new repo inherit the same operating discipline from day one.[^2_4][^2_2]
+
+A good branch naming scheme would be `feat/...`, `fix/...`, `docs/...`, `agent/...`, and maybe `seminar/...`. Then an AI branch like `agent/literature-review-outline` or `agent/fix-markdown-links` is immediately understandable to you during review.[^2_6][^2_9]
+
+## Best practices for your setup
+
+Use “Use this template” when creating new project repos, not fork, because your new repo is supposed to become its own project rather than remain a contribution copy of `agentRealm`. Keep `main` protected in important repos and require pull requests for merges, because GitHub recommends protected branches and reviews to maintain quality.[^2_3][^2_2][^2_1]
+
+Do not put secrets, tokens, or API keys into the template, because every future repo will inherit them if you forget; GitHub recommends features like secret scanning and push protection to reduce this risk. Also avoid storing large binary files inside the template repo, and note that template repositories cannot include files stored using Git LFS.[^2_2][^2_1]
+
+The most important mindset is this: `agentRealm` is a factory mold, not a central live project. Improve the mold deliberately, create fresh repos from it, and treat each real project as independent after creation.[^2_1]
+
+A clean starting workflow for you would be:
+
+1. Build `agentRealm` as private template repo with folders, docs, `.github` templates, and agent rules.[^2_4][^2_1]
+2. In repo settings, enable **Template repository**.[^2_1]
+3. For a new seminar/project, click **Use this template** and create a new private repo.[^2_1]
+4. Clone that new repo locally and work only through branches and PRs.[^2_7][^2_2]
+5. Improve `agentRealm` only when you want to improve future projects, not to manage current project content.[^2_1]
+
+Would you like me to design a concrete `agentRealm` folder structure and file set for your exact use case, including `.github`, `agents`, `docs`, and branch rules?
+<span style="display:none">[^2_10][^2_11][^2_12][^2_13][^2_14][^2_15][^2_16][^2_17]</span>
+
+<div align="center">⁂</div>
+
+[^2_1]: https://www.theserverside.com/answer/Git-fork-vs-clone-Whats-the-difference
+
+[^2_2]: https://stackoverflow.com/questions/7057194/what-is-the-difference-between-forking-and-cloning-on-github
+
+[^2_3]: https://github.com/alshedivat/al-folio/pull/1167
+
+[^2_4]: https://discourse.sustainoss.org/t/github-template-repository-with-best-practices/1225
+
+[^2_5]: https://github.com/jlcanovas/gh-best-practices-template
+
+[^2_6]: https://scriptbinary.com/git/git-branching-best-practices-collaboration
+
+[^2_7]: https://dev.to/jtreeves/git-best-practices-for-team-collaboration-3bf0
+
+[^2_8]: https://0xdc.me/blog/github-templates-and-repository-sync/
+
+[^2_9]: https://www.owais.io/blog/2025-10-19_git-workflow-pull-requests-collaboration-guide
+
+[^2_10]: https://docs.github.com/en/repositories/creating-and-managing-repositories/best-practices-for-repositories
+
+[^2_11]: https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository
+
+[^2_12]: https://everhour.com/blog/github-templates/
+
+[^2_13]: https://gitprotect.io/blog/how-to-use-github-repository-templates/
+
+[^2_14]: https://github.com/chowland/chowland.github.io/commit/c5b7ac2d04cbc4a4f37bb95050df295d584e4f00
+
+[^2_15]: https://dev.to/pwd9000/github-repository-best-practices-23ck
+
+[^2_16]: https://rajeevpentyala.com/2026/01/24/github-clone-vs-fork-vs-use-this-template/
+
+[^2_17]: https://stackoverflow.com/questions/62082123/github-what-is-the-difference-between-template-and-fork-concepts-and-when-to-us
+
