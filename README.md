@@ -69,7 +69,7 @@ Push the branch, open a PR on GitHub, merge it to `main`, and then delete the sa
 
 ## 📁 Folder Structure Explained
 
-- `docs/`: Your writing (seminar/thesis), references, and templates.
+- `docs/`: Your writing (seminar/thesis), references, and [templates](./docs/TEMPLATES.md).
 - `src/`: Your implementation code.
 - `analysis/`: Data notebooks and reports.
 - `data/`: Raw and processed data (never edit `data/raw/`).
