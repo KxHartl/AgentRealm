@@ -53,6 +53,17 @@ fi
 
 mkdir -p .agents
 
+# Optional: Apply GitHub ruleset if 'gh' is logged in
+echo "Checking GitHub CLI status..."
+if command -v gh >/dev/null 2>&1; then
+  if gh auth status >/dev/null 2>&1; then
+    echo "Applying GitHub ruleset..."
+    bash ./scripts/helpers/apply-github-config.sh
+  else
+    echo "Not logged in to GitHub CLI. Skipping automatic ruleset application."
+  fi
+fi
+
 echo "Project bootstrapped."
 echo "Name: $project_name"
 echo "IDE: $ide"

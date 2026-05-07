@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Apply GitHub Ruleset
+# Uses 'gh' CLI to import the ruleset from config/github/ruleset.json
+
+root_dir="$(git rev-parse --show-toplevel)"
+ruleset_file="${root_dir}/config/github/ruleset.json"
+
+if [[ ! -f "$ruleset_file" ]]; then
+  echo "Ruleset file not found at $ruleset_file"
+  exit 1
+fi
+
+if ! command -v gh >/dev/null 2>&1; then
+  echo "GitHub CLI (gh) not found. Please install it first."
+  exit 1
+fi
+
+repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
+if [[ -z "$repo" ]]; then
+  echo "Could not determine GitHub repository name."
+  exit 1
+fi
+
+echo "Applying ruleset to $repo..."
+
+gh api "repos/${repo}/rulesets" --method POST --input "$ruleset_file" --silent
+
+if [[ $? -eq 0 ]]; then
+  echo "✅ Successfully applied GitHub ruleset!"
+else
+  echo "❌ Failed to apply ruleset."
+  exit 1
+fi
