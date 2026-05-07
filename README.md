@@ -20,14 +20,13 @@ Go to the [AgentRealm](https://github.com/your-username/agentRealm) repo and cli
 
 | OS | Command |
 | :--- | :--- |
-| **Windows** | `.\scripts\helpers\bootstrap-project.ps1 -name "My Project" -profile python -ide vscode` |
-| **Linux** | `./scripts/helpers/bootstrap-project.sh --name "My Project" --profile python --ide vscode` |
+| **Windows** | `.\scripts\helpers\bootstrap-project.ps1 -name "My Project" -ide vscode` |
+| **Linux** | `./scripts/helpers/bootstrap-project.sh --name "My Project" --ide vscode` |
 
 #### ⚙️ Bootstrap Options
 | Parameter | Values | Description |
 | :--- | :--- | :--- |
 | `-name` | `string` | Name of your project (updates configs and STATE.md). |
-| `-profile` | `python`, `cpp`, `document` | Pre-sets the environment and active document templates. |
 | `-ide` | `vscode`, `antigravity` | Selects your default workspace tool (CLI or GUI). |
 
 ---

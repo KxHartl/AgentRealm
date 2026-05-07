@@ -22,9 +22,23 @@ if ($LASTEXITCODE -eq 0) {
 Write-Host "Worktree created: $worktree"
 Write-Host "Branch: $branch"
 
-# Open external terminal
-Write-Host "Opening external terminal..."
-Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$worktree'"
+# Check terminal settings
+$skipTerminalLine = $config | Select-String "skip_external_terminal:"
+$skipTerminal = $false
+if ($skipTerminalLine -match "(true|false)") {
+    $skipTerminal = [System.Convert]::ToBoolean($matches[1])
+}
+
+if (-not $skipTerminal) {
+    Write-Host "Opening external terminal..."
+    if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
+        # Use Windows Terminal (respects default profile)
+        Start-Process wt.exe -ArgumentList "-d `"$worktree`""
+    } else {
+        # Fallback to powershell (respects profile if not using -NoProfile)
+        Start-Process powershell.exe -ArgumentList "-NoExit", "-Command", "Set-Location '$worktree'"
+    }
+}
 
 # Launch IDE
 $config = Get-Content (Join-Path $rootDir "config/project.yaml")
