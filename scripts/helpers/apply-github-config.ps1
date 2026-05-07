@@ -2,6 +2,12 @@
 # Uses 'gh' CLI to import the ruleset from config/github/ruleset.json
 
 $rootDir = git rev-parse --show-toplevel
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rootDir)) {
+    Write-Host "Could not determine the repository root. Please run this script from within a valid git repository." -ForegroundColor Red
+    exit 1
+}
+
+Set-Location $rootDir
 $rulesetFile = Join-Path $rootDir "config/github/ruleset.json"
 
 if (-not (Test-Path $rulesetFile)) {
