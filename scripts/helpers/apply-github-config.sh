@@ -29,4 +29,5 @@ if [[ $? -eq 0 ]]; then
   echo "✅ Successfully applied GitHub ruleset!"
 else
   echo "❌ Failed to apply ruleset."
+  exit 1
 fi
