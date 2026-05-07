@@ -19,6 +19,7 @@ Global operating rules for humans and AI agents in this repository.
 4. Preserve source-of-truth data: never edit files in `data/raw/`.
 5. Cite sources in `docs/references/` whenever claims are added to seminar text.
 6. Reviewer must only use task brief + diff + standards; no implementer chat history.
+7. **Global Guidelines**: Always read and follow `skills/prompts/global.md`.
 
 ## Branch and worktree naming
 

@@ -22,6 +22,13 @@ fi
 echo "Worktree created: $worktree"
 echo "Branch: $branch"
 
+# Update STATE.md focus
+state_file="${root_dir}/STATE.md"
+if [[ -f "$state_file" ]]; then
+  sed -i "/## Current focus/a - ${slug}" "$state_file"
+  echo "Updated STATE.md focus with: ${slug}"
+fi
+
 # Check terminal settings
 skip_terminal=$(grep "skip_external_terminal:" "$root_dir/config/project.yaml" | grep -oE "true|false" || echo "false")
 
