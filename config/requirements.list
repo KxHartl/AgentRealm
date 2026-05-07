@@ -1,8 +1,8 @@
 # scope|name|command|required|min_version|install_hint|notes
-global|git|git|yes|2.30|Install Git|Required for all repository operations and worktrees.
-global|gh|gh|recommended|2.0|Install GitHub CLI|Used for PRs, repo creation, and GitHub automation.
-global|python|python3|recommended|3.11|Install Python 3.11+|Needed for Python projects, notebooks, and local helpers.
-global|node|node|recommended|20|Install Node.js|Useful for web or JavaScript-based projects.
-global|pandoc|pandoc|recommended|2.0|Install Pandoc|Required for DOCX export and document conversion.
-global|latexmk|latexmk|recommended|4.0|Install TeX Live or MiKTeX|Required for LaTeX builds in document-heavy projects.
-global|copilot|copilot|optional|0.0|Install Copilot CLI|Enable when using Copilot CLI as an agent.
+global|git|git|yes|2.30|Install Git.Git|Required for all repository operations and worktrees.
+global|gh|gh|recommended|2.0|Install GitHub.cli|Used for PRs, repo creation, and GitHub automation.
+global|python|python3|recommended|3.11|Install Python.Python.3.12|Needed for Python projects, notebooks, and local helpers.
+global|node|node|recommended|20|Install OpenJS.NodeJS.LTS|Useful for web or JavaScript-based projects.
+global|pandoc|pandoc|recommended|2.0|Install JohnMacFarlane.Pandoc|Required for DOCX export and document conversion.
+global|latexmk|latexmk|recommended|4.0|Install MiKTeX.MiKTeX|Required for LaTeX builds in document-heavy projects.
+global|copilot|copilot|optional|0.0|Install GitHub.CopilotCLI|Enable when using Copilot CLI as an agent.

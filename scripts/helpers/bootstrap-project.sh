@@ -53,6 +53,10 @@ fi
 
 mkdir -p .agents
 
+# 1. Check requirements
+echo "Verifying project requirements..."
+bash ./scripts/helpers/check-requirements.sh || echo "Warning: Some requirements are missing. Run with --install if you have brew or apt-get."
+
 # Optional: Apply GitHub ruleset if 'gh' is logged in
 echo "Checking GitHub CLI status..."
 if command -v gh >/dev/null 2>&1; then

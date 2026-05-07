@@ -2,8 +2,18 @@ param (
     [switch]$Install
 )
 
-$rootDir = git rev-parse --show-toplevel
+$rootDir = git rev-parse --show-toplevel 2>$null
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rootDir)) {
+    $rootDir = Get-Location
+}
+
 $manifest = Join-Path $rootDir "config/requirements.list"
+if (-not (Test-Path $manifest)) {
+    if (Test-Path "../../config/requirements.list") {
+        $rootDir = Resolve-Path "../../"
+        $manifest = Join-Path $rootDir "config/requirements.list"
+    }
+}
 
 if (-not (Test-Path $manifest)) {
     Write-Host "Requirement manifest not found: $manifest"

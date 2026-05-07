@@ -5,86 +5,86 @@ Universal template for **projects, seminars, and research** with a seamless Huma
 ---
 
 ## ✨ Key Features
-- 🚀 **One-Command Setup**: Bootstrap your project in seconds.
-- 🛡️ **Safe Sandboxing**: Use Git Worktrees to isolate agent tasks.
+- 🚀 **One-Command Setup**: Bootstrap your project and install all dependencies automatically.
+- 🛡️ **Safe Sandboxing**: Use Git Worktrees to isolate agent tasks and prevent code contamination.
 - 💻 **Cross-Platform**: Full support for **Windows (PowerShell)** and **Linux (Bash)**.
-- 🤖 **Agent Ready**: Pre-configured for Claude, Gemini, Copilot, and more.
-- 📝 **Seminar Optimized**: Professional LaTeX templates with auto-justification.
+- 🤖 **Agent Ready**: Pre-configured for Claude, Gemini, Copilot, and custom agents.
+- 📝 **Seminar Optimized**: Professional LaTeX environment with auto-build and SyncTeX support.
+
+---
+
+## 📋 Prerequisites
+
+Before you start, ensure you have a package manager installed:
+- **Windows**: [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) (Default on Win 10/11).
+- **macOS/Linux**: [Homebrew](https://brew.sh/) or a system package manager (apt/dnf).
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Initialize Project
-Go to the [AgentRealm](https://github.com/your-username/agentRealm) repo and click **"Use this template"**. Clone your new repo and run:
+### 1. Initialize & Install
+Clone this template and run the bootstrap script. It will automatically detect missing programs (Git, Python, Node, Pandoc, MiKTeX) and offer to install them.
 
 | OS | Command |
 | :--- | :--- |
-| **Windows** | `.\scripts\helpers\bootstrap-project.ps1 -name "My Project" -ide vscode` |
-| **Linux** | `./scripts/helpers/bootstrap-project.sh --name "My Project" --ide vscode` |
+| **Windows** | `.\scripts\helpers\bootstrap-project.ps1 -name "My Project"` |
+| **Linux** | `./scripts/helpers/bootstrap-project.sh --name "My Project"` |
 
-#### ⚙️ Bootstrap Options
-| Parameter | Values | Description |
-| :--- | :--- | :--- |
-| `-name` | `string` | Name of your project (updates configs and STATE.md). |
-| `-ide` | `vscode`, `antigravity` | Selects your default workspace tool (CLI or GUI). |
+### 2. Configure GitHub (Optional)
+If you are logged into the `gh` CLI, the script will automatically apply branch protection rules from `config/github/ruleset.json`.
 
 ---
 
-## 🛡️ Repository Protection
-GitHub templates do not copy branch protection rules. AgentRealm solves this with an automated ruleset importer:
+## 🛠️ Human + Agent Workflow
 
-1. **Configure**: Update your ruleset in `config/github/ruleset.json`.
-2. **Apply**: Run `.\scripts\helpers\apply-github-config.ps1` (or `.sh`).
-*This is automatically attempted during `bootstrap-project` if you are logged into the `gh` CLI.*
+AgentRealm uses **Git Worktrees** to create "Sandboxes" (`.agents/`) for every task. This keeps your main workspace clean while agents work.
 
----
+### Step 1: Start a Task
+Create a new sandbox for a specific goal. This creates a branch and opens a dedicated folder.
+- `.\scripts\git\new-task-worktree.ps1 my-task-slug`
 
-## 🛠️ Daily Workflow
+### Step 2: Delegate to Agent
+Run your agent inside the sandbox. The agent will have access to the full repository context but its changes remain isolated.
+- `.\scripts\agents\run_gemini_task.ps1 .agents\my-task-slug`
 
-### Step 1: Create a Task Sandbox
-Create an isolated environment for your current task. This will automatically open your IDE and a new terminal.
-
-- **Windows**: `.\scripts\git\new-task-worktree.ps1 my-task-slug`
-- **Linux**: `./scripts/git/new-task-worktree.sh my-task-slug`
-
-### Step 2: Run an AI Agent
-Launch your preferred agent inside the sandbox.
-
-- **Windows**: `.\scripts\agents\run_claude_task.ps1 .agents\my-task-slug`
-- **Linux**: `./scripts/agents/run_claude_task.sh .agents/my-task-slug`
-
-### Step 3: Review & Merge
-Once the task is done, review the changes, commit, and cleanup.
-
-```powershell
-# Cleanup sandbox
-# Windows
-.\scripts\git\cleanup-worktrees.ps1 .agents\my-task-slug
-
-# Linux
-./scripts/git/cleanup-worktrees.sh .agents/my-task-slug
-```
+### Step 3: Sanity Check & Merge
+Before merging, run the automated quality checks:
+- `.\scripts\helpers\check-all.ps1`
+Then commit your changes and cleanup the worktree:
+- `.\scripts\git\cleanup-worktrees.ps1 .agents\my-task-slug`
 
 ---
 
-## 🛡️ The Golden Rules
-1. **1 Task = 1 Worktree**: Never cross-contaminate tasks.
-2. **Never Commit to `main`**: Always work in branches.
-3. **Review Everything**: Use `git diff` before merging agent work.
+## 📝 LaTeX & Seminar Writing
+
+This template is optimized for high-quality academic writing.
+
+### 🔧 Setup
+- **Engine**: [MiKTeX](https://miktex.org/) (Windows) or TeX Live (Linux).
+- **VS Code Extension**: [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop).
+- **Features**:
+  - **Auto-Build**: PDF generates automatically on save.
+  - **SyncTeX**: Double-click PDF to jump to code; `Ctrl+Alt+J` to jump to PDF.
+  - **Clean Root**: All build artifacts go to the `build/` folder.
+
+### 📐 Standards
+Per `skills/prompts/global.md`, all LaTeX documents should use:
+- **Full justification** (`\sloppy` or `\fussy` as appropriate).
+- **No manual hyphenation** (let the engine handle it).
 
 ---
 
-## 📁 Structure
+## 📁 Repository Structure
 - `docs/` - Seminars, thesis, and references.
-- `src/` - Implementation code.
-- `analysis/` - Data notebooks and reports.
-- `data/` - Raw and processed datasets.
-- `scripts/` - Universal automation tools.
-- `.agents/` - Temporary task sandboxes (ignored by git).
+- `src/` - Core implementation code.
+- `analysis/` - Data analysis, Python notebooks, and processed results.
+- `data/` - Datasets (keep `raw/` immutable!).
+- `scripts/` - Universal automation helpers.
+- `config/` - Project and environment specifications.
 
 ---
 
-## 🤖 Global State
-- `AGENTS.md` - The Rulebook for AI agents.
-- `STATE.md` - The Live Brain (backlog and focus).
+## 🤖 Governance
+- `AGENTS.md` - Mandatory rules for all human and AI agents.
+- `STATE.md` - The "Live Brain" containing the project backlog and current focus.

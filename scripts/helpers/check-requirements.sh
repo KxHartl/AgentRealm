@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-root_dir="$(git rev-parse --show-toplevel)"
+root_dir="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 manifest="${root_dir}/config/requirements.list"
+
+if [[ ! -f "$manifest" ]]; then
+  # If we are in scripts/helpers, try one level up
+  if [[ -f "../../config/requirements.list" ]]; then
+    root_dir="../.."
+    manifest="${root_dir}/config/requirements.list"
+  fi
+fi
 
 if [[ ! -f "$manifest" ]]; then
   echo "Requirement manifest not found: $manifest"

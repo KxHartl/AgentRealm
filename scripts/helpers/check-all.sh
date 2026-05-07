@@ -2,7 +2,12 @@
 # Unified Sanity Check
 # Detects project content and runs relevant quality checks.
 
-root_dir="$(git rev-parse --show-toplevel)"
+root_dir="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+if [[ ! -f "${root_dir}/STATE.md" ]]; then
+  if [[ -f "../../STATE.md" ]]; then
+    root_dir="../.."
+  fi
+fi
 cd "$root_dir"
 
 echo "--- 🔍 Starting Unified Sanity Check ---"

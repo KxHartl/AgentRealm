@@ -1,17 +1,24 @@
 # Apply GitHub Ruleset
 # Uses 'gh' CLI to import the ruleset from config/github/ruleset.json
 
-$rootDir = git rev-parse --show-toplevel
+$rootDir = git rev-parse --show-toplevel 2>$null
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rootDir)) {
-    Write-Host "Could not determine the repository root. Please run this script from within a valid git repository." -ForegroundColor Red
-    exit 1
+    $rootDir = Get-Location
 }
 
-Set-Location $rootDir
+# If we are in scripts/helpers, try to find the config relative to it
 $rulesetFile = Join-Path $rootDir "config/github/ruleset.json"
+if (-not (Test-Path $rulesetFile)) {
+    if (Test-Path "../../config/github/ruleset.json") {
+        $rootDir = Resolve-Path "../../"
+        $rulesetFile = Join-Path $rootDir "config/github/ruleset.json"
+    }
+}
 
 if (-not (Test-Path $rulesetFile)) {
     Write-Host "Ruleset file not found at $rulesetFile" -ForegroundColor Red
+    Write-Host "Current location: $(Get-Location)"
+    Write-Host "Try running: git config --global --add safe.directory $(Get-Location)"
     exit 1
 }
 
