@@ -1,6 +1,6 @@
 # Python profile
 
-- Runtime: Python 3.11+
+- Runtime: Python 3.10+
 - Recommended env: `.venv` or `poetry`
 - Typical checks:
   - `python -m pytest`

@@ -1,86 +1,82 @@
-# AgentRealm (GitHub Template)
+# 🌌 AgentRealm
 
-Universal GitHub template for **projects, seminars, and thesis** work using a shared human + AI-agent workflow.
-
-> [!WARNING]
-> **This is a TEMPLATE (a factory mold), not a live project repo.**
-> Do not work in this repository directly. Follow the instructions below to start a new project.
+Universal template for **projects, seminars, and research** with a seamless Human + AI-Agent workflow. Built for speed, isolation, and cross-platform compatibility.
 
 ---
 
-## 🚀 How to Start a New Project
-
-1. **GitHub Template**: Go to the [AgentRealm](https://github.com/your-username/agentRealm) repository on GitHub.
-2. **Use this template**: Click the green **"Use this template"** button.
-   - ❌ **DO NOT FORK**: Forking is for contributing to *this* template. "Use this template" is for starting a *new* project.
-3. **Private Repository**: Create a new private repository under your account.
-4. **Clone locally**: Clone your new project repository to your machine.
-5. **Bootstrap**: Run the setup script to initialize your profile (e.g., python, document).
-   ```bash
-   ./scripts/helpers/bootstrap-project.sh --name "My New Project" --profile python
-   ```
+## ✨ Key Features
+- 🚀 **One-Command Setup**: Bootstrap your project in seconds.
+- 🛡️ **Safe Sandboxing**: Use Git Worktrees to isolate agent tasks.
+- 💻 **Cross-Platform**: Full support for **Windows (PowerShell)** and **Linux (Bash)**.
+- 🤖 **Agent Ready**: Pre-configured for Claude, Gemini, Copilot, and more.
+- 📝 **Seminar Optimized**: Professional LaTeX templates with auto-justification.
 
 ---
 
-## 🛡️ The Golden Rules for AI-Agent Collaboration
+## 🚀 Quick Start
 
-To prevent chaos and keep your repository clean, follow these rules:
+### 1. Initialize Project
+Go to the [AgentRealm](https://github.com/your-username/agentRealm) repo and click **"Use this template"**. Clone your new repo and run:
 
-1. **1 Agent = 1 Task = 1 Git Worktree**: Each AI agent or task must work in its own isolated sandbox.
-2. **Never Commit to `main` Directly**: Always work in branches. `main` is the "source of truth."
-3. **Review Before Merging**: Use Pull Requests (PRs) or manual diff reviews (`git diff`) before merging any agent's work.
-4. **No Secrets**: Never put API keys or secrets in the template files. Use `.env` files (which are git-ignored).
+| OS | Command |
+| :--- | :--- |
+| **Windows** | `.\scripts\helpers\bootstrap-project.ps1 -name "My Project" -profile python -ide vscode` |
+| **Linux** | `./scripts/helpers/bootstrap-project.sh --name "My Project" --profile python --ide vscode` |
+
+#### ⚙️ Bootstrap Options
+| Parameter | Values | Description |
+| :--- | :--- | :--- |
+| `-name` | `string` | Name of your project (updates configs and STATE.md). |
+| `-profile` | `python`, `cpp`, `document` | Pre-sets the environment and active document templates. |
+| `-ide` | `vscode`, `antigravity` | Selects your default workspace tool (CLI or GUI). |
 
 ---
 
-## 🛠️ Daily Workflow (Idiot-Proof)
+## 🛠️ Daily Workflow
 
 ### Step 1: Create a Task Sandbox
-Use the script to create a new git worktree (sandbox) for your task.
-```bash
-./scripts/git/new-task-worktree.sh literature-review
-```
-This creates a folder in `.agents/literature-review` and checks out a new branch.
+Create an isolated environment for your current task. This will automatically open your IDE and a new terminal.
 
-### Step 2: Run an Agent
-Start your preferred agent (Claude, Gemini, Copilot, etc.) inside that worktree.
-```bash
-./scripts/agents/run_copilot_task.sh .agents/literature-review
-```
+- **Windows**: `.\scripts\git\new-task-worktree.ps1 my-task-slug`
+- **Linux**: `./scripts/git/new-task-worktree.sh my-task-slug`
 
-### Step 3: Review the Work
-Go to the worktree folder, check the changes, and commit them.
-```bash
-cd .agents/literature-review
-git status
-git diff
-git add .
-git commit -m "feat: completed literature review outline"
-```
+### Step 2: Run an AI Agent
+Launch your preferred agent inside the sandbox.
 
-### Step 4: Merge and Cleanup
-Push the branch, open a PR on GitHub, merge it to `main`, and then delete the sandbox.
-```bash
-# From the main repo folder
-./scripts/git/cleanup-worktrees.sh .agents/literature-review
+- **Windows**: `.\scripts\agents\run_claude_task.ps1 .agents\my-task-slug`
+- **Linux**: `./scripts/agents/run_claude_task.sh .agents/my-task-slug`
+
+### Step 3: Review & Merge
+Once the task is done, review the changes, commit, and cleanup.
+
+```powershell
+# Cleanup sandbox
+# Windows
+.\scripts\git\cleanup-worktrees.ps1 .agents\my-task-slug
+
+# Linux
+./scripts/git/cleanup-worktrees.sh .agents/my-task-slug
 ```
 
 ---
 
-## 📁 Folder Structure Explained
-
-- `docs/`: Your writing (seminar/thesis), references, and [templates](./docs/TEMPLATES.md).
-- `src/`: Your implementation code.
-- `analysis/`: Data notebooks and reports.
-- `data/`: Raw and processed data (never edit `data/raw/`).
-- `assets/`: Figures, diagrams, and style guides.
-- `config/`: Agent roles and project configuration.
-- `scripts/`: Help scripts for git and agent management.
-- `.agents/`: Local git worktree sandboxes (ignored by main git history until merged).
+## 🛡️ The Golden Rules
+1. **1 Task = 1 Worktree**: Never cross-contaminate tasks.
+2. **Never Commit to `main`**: Always work in branches.
+3. **Review Everything**: Use `git diff` before merging agent work.
 
 ---
 
-## 🤖 Global Agent State
+## 📁 Structure
+- `docs/` - Seminars, thesis, and references.
+- `src/` - Implementation code.
+- `analysis/` - Data notebooks and reports.
+- `data/` - Raw and processed datasets.
+- `scripts/` - Universal automation tools.
+- `.agents/` - Temporary task sandboxes (ignored by git).
 
-- `AGENTS.md`: The rulebook. Every agent reads this to know their role and constraints.
-- `STATE.md`: The live brain. This file tracks what has been done, what is being worked on, and the backlog.
+---
+
+## 🤖 Global State
+- `AGENTS.md` - The Rulebook for AI agents.
+- `STATE.md` - The Live Brain (backlog and focus).

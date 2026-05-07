@@ -2,6 +2,7 @@ name: "TBD Project"
 description: "Project created from agentic-workspace template"
 project_type: "seminar"
 profile: "document" # python | cpp | document
+default_ide: "vscode" # vscode | antigravity
 stack:
   languages: []
   frameworks: []

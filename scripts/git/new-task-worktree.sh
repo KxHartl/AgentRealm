@@ -21,3 +21,27 @@ fi
 
 echo "Worktree created: $worktree"
 echo "Branch: $branch"
+
+# Open external terminal
+if command -v x-terminal-emulator >/dev/null 2>&1; then
+  x-terminal-emulator --working-directory="$worktree" &
+elif command -v gnome-terminal >/dev/null 2>&1; then
+  gnome-terminal --working-directory="$worktree" &
+elif command -v konsole >/dev/null 2>&1; then
+  konsole --workdir "$worktree" &
+fi
+
+# Launch IDE
+ide=$(grep "default_ide:" "$root_dir/config/project.yaml" | cut -d'"' -f2)
+
+if [[ "$ide" == "vscode" ]]; then
+  echo "Launching VS Code..."
+  code "$worktree"
+elif [[ "$ide" == "antigravity" ]]; then
+  echo "Launching Antigravity..."
+  if command -v antigravity >/dev/null 2>&1; then
+    antigravity "$worktree"
+  else
+    echo "antigravity command not found. Using external terminal."
+  fi
+fi

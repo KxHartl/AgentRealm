@@ -3,9 +3,10 @@ set -euo pipefail
 
 project_name=""
 profile=""
+ide="vscode"
 
 usage() {
-  echo "Usage: $0 --name <project-name> --profile <python|cpp|document>"
+  echo "Usage: $0 --name <project-name> --profile <python|cpp|document> [--ide <vscode|antigravity>]"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -16,6 +17,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --profile)
       profile="$2"
+      shift 2
+      ;;
+    --ide)
+      ide="$2"
       shift 2
       ;;
     *)
@@ -39,6 +44,7 @@ requirements_manifest="config/requirements.list"
 
 sed -i "s/^name: .*/name: \"${project_name}\"/" config/project.yaml
 sed -i "s/^profile: .*/profile: \"${profile}\" # python | cpp | document/" config/project.yaml
+sed -i "s/^default_ide: .*/default_ide: \"${ide}\" # vscode | antigravity/" config/project.yaml
 sed -i "s/^- Name: .*/- Name: ${project_name}/" STATE.md
 sed -i "s/^- Profile: .*/- Profile: ${profile}/" STATE.md
 
@@ -63,4 +69,5 @@ cp "profiles/${profile}/README.profile.md" "docs/templates/active-profile.md"
 echo "Project bootstrapped."
 echo "Name: $project_name"
 echo "Profile: $profile"
+echo "IDE: $ide"
 echo "Requirements manifest: $requirements_manifest"
