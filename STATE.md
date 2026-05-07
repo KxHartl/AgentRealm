@@ -13,20 +13,19 @@
 - Installation status: _Not checked yet._
 
 ## Current focus
+- review-repo
 
-- Unifying agents and optimizing terminal profile support.
+- **Perfecting the Universal Template**: Enhancing automation, data integrity, and documentation workflows.
 
 ## Backlog
 
-- [ ] Define problem statement and success criteria.
-- [ ] Ingest and catalog initial sources.
-- [ ] Create first implementation/data/writing tasks.
-
-## Agent notes
-
-- Keep notes short and actionable.
-- Include links to PRs/commits/worktrees when relevant.
+- [ ] Implement data integrity checks (`check-data.ps1`) for `data/raw/`.
+- [ ] Add "Project Dashboard" script for quick status overview.
+- [ ] Create automated "Project Initialization" walkthrough for new users.
 
 ## Changelog
 
-- Initial template state created.
+- 2026-05-07: Standardized PR workflow with a new GitHub PR template.
+- 2026-05-07: Added automated Python Virtual Environment setup to bootstrap script.
+- 2026-05-07: Created unified documentation build system (`build-docs.ps1/sh`).
+- 2026-05-07: Optimized LaTeX Workshop settings for VS Code.

@@ -13,7 +13,7 @@ if (-not (Test-Path (Join-Path $rootDir "STATE.md"))) {
 }
 Set-Location $rootDir
 
-Write-Host "--- 🔍 Starting Unified Sanity Check ---" -ForegroundColor Cyan
+Write-Host "--- Starting Unified Sanity Check ---" -ForegroundColor Cyan
 
 # 1. Python Checks
 $pythonFiles = Get-ChildItem -Path . -Filter "*.py" -Recurse -Exclude ".venv", "node_modules", ".git", ".agents"
@@ -55,4 +55,8 @@ if (Test-Path "CMakeLists.txt") {
     Write-Host "Tip: Run 'cmake -S . -B build' and 'cmake --build build' to verify build." -ForegroundColor Gray
 }
 
-Write-Host "--- ✅ Sanity Check Finished ---" -ForegroundColor Cyan
+# 5. Data Integrity
+Write-Host "[Data] Verifying raw data integrity..." -ForegroundColor Yellow
+.\scripts\helpers\check-data.ps1
+
+Write-Host "--- Sanity Check Finished ---" -ForegroundColor Cyan
