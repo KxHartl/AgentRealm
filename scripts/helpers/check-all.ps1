@@ -1,7 +1,16 @@
 # Unified Sanity Check
 # Detects project content and runs relevant quality checks.
 
-$rootDir = git rev-parse --show-toplevel
+$rootDir = git rev-parse --show-toplevel 2>$null
+if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($rootDir)) {
+    $rootDir = Get-Location
+}
+
+if (-not (Test-Path (Join-Path $rootDir "STATE.md"))) {
+    if (Test-Path "../../STATE.md") {
+        $rootDir = Resolve-Path "../../"
+    }
+}
 Set-Location $rootDir
 
 Write-Host "--- 🔍 Starting Unified Sanity Check ---" -ForegroundColor Cyan

@@ -41,6 +41,13 @@ if (-not (Test-Path .agents)) {
     New-Item -ItemType Directory -Path .agents
 }
 
+# 1. Check and install requirements
+Write-Host "Verifying project requirements..." -ForegroundColor Cyan
+.\scripts\helpers\check-requirements.ps1 -Install
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Warning: Some requirements are still missing. You might need to install them manually." -ForegroundColor Yellow
+}
+
 # Optional: Apply GitHub ruleset if 'gh' is logged in
 Write-Host "Checking GitHub CLI status..."
 if (Get-Command gh -ErrorAction SilentlyContinue) {
