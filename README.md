@@ -31,6 +31,15 @@ Go to the [AgentRealm](https://github.com/your-username/agentRealm) repo and cli
 
 ---
 
+## 🛡️ Repository Protection
+GitHub templates do not copy branch protection rules. AgentRealm solves this with an automated ruleset importer:
+
+1. **Configure**: Update your ruleset in `config/github/ruleset.json`.
+2. **Apply**: Run `.\scripts\helpers\apply-github-config.ps1` (or `.sh`).
+*This is automatically attempted during `bootstrap-project` if you are logged into the `gh` CLI.*
+
+---
+
 ## 🛠️ Daily Workflow
 
 ### Step 1: Create a Task Sandbox

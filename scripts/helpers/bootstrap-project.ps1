@@ -41,6 +41,18 @@ if (-not (Test-Path .agents)) {
     New-Item -ItemType Directory -Path .agents
 }
 
+# Optional: Apply GitHub ruleset if 'gh' is logged in
+Write-Host "Checking GitHub CLI status..."
+if (Get-Command gh -ErrorAction SilentlyContinue) {
+    $authStatus = gh auth status 2>&1
+    if ($authStatus -match "Logged in to github.com") {
+        Write-Host "Applying GitHub ruleset..."
+        .\scripts\helpers\apply-github-config.ps1
+    } else {
+        Write-Host "Not logged in to GitHub CLI. Skipping automatic ruleset application." -ForegroundColor Gray
+    }
+}
+
 Write-Host "Project bootstrapped."
 Write-Host "Name: $name"
 Write-Host "IDE: $ide"
