@@ -32,9 +32,9 @@ Global operating rules for humans and AI agents in this repository.
 
 ## Expected task flow
 
-1. Create task worktree with `scripts/git/new-task-worktree.sh`.
+1. Create task worktree with `scripts/git/new-task-worktree.[sh|ps1]`.
 2. Execute work in the worktree.
 3. Run quality checks relevant to profile.
 4. Create review report in `reviews/code/` or `reviews/text/`.
 5. Open PR and merge after review.
-6. Remove worktree with `scripts/git/cleanup-worktrees.sh`.
+6. Remove worktree with `scripts/git/cleanup-worktrees.[sh|ps1]`.
