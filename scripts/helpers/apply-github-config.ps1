@@ -25,10 +25,15 @@ Write-Host "Applying ruleset to $repo..." -ForegroundColor Cyan
 
 # Apply via API
 # Note: This uses the 'gh api' to create a repository ruleset
-gh api "repos/$repo/rulesets" --method POST --input "$rulesetFile" --silent
+$apiResponse = gh api "repos/$repo/rulesets" --method POST --input "$rulesetFile" 2>&1
+$exitCode = $LASTEXITCODE
 
-if ($LASTEXITCODE -eq 0) {
+if ($exitCode -eq 0) {
     Write-Host "✅ Successfully applied GitHub ruleset!" -ForegroundColor Green
 } else {
     Write-Host "❌ Failed to apply ruleset. Check if you have admin permissions and the JSON format is correct." -ForegroundColor Red
+    if ($apiResponse) {
+        Write-Host "GitHub API response:" -ForegroundColor Yellow
+        Write-Host $apiResponse
+    }
 }
