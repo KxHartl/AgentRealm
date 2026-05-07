@@ -48,6 +48,25 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Warning: Some requirements are still missing. You might need to install them manually." -ForegroundColor Yellow
 }
 
+# 2. Setup Python Virtual Environment
+if (Get-Command python -ErrorAction SilentlyContinue) {
+    Write-Host "Setting up Python virtual environment..." -ForegroundColor Cyan
+    if (-not (Test-Path .venv)) {
+        python -m venv .venv
+        Write-Host "Virtual environment created." -ForegroundColor Green
+    }
+    
+    # Update VS Code settings for Python
+    $settingsPath = ".vscode/settings.json"
+    if (Test-Path $settingsPath) {
+        $settings = Get-Content $settingsPath | ConvertFrom-Json
+        $settings | Add-Member -MemberType NoteProperty -Name "python.defaultInterpreterPath" -Value "`${workspaceFolder}/.venv/Scripts/python.exe" -Force
+        $settings | Add-Member -MemberType NoteProperty -Name "python.terminal.activateEnvInSelectedTerminal" -Value $true -Force
+        $settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
+        Write-Host "VS Code Python settings updated." -ForegroundColor Green
+    }
+}
+
 # Optional: Apply GitHub ruleset if 'gh' is logged in
 Write-Host "Checking GitHub CLI status..."
 if (Get-Command gh -ErrorAction SilentlyContinue) {

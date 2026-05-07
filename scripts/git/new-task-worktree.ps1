@@ -22,6 +22,9 @@ if ($LASTEXITCODE -eq 0) {
 Write-Host "Worktree created: $worktree"
 Write-Host "Branch: $branch"
 
+# Ensure the new worktree is marked as safe (prevents "dubious ownership" errors on network shares)
+git config --global --add safe.directory "$worktree"
+
 # Update STATE.md focus
 $stateFile = Join-Path $rootDir "STATE.md"
 if (Test-Path $stateFile) {

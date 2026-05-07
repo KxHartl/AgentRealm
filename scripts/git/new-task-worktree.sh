@@ -22,6 +22,9 @@ fi
 echo "Worktree created: $worktree"
 echo "Branch: $branch"
 
+# Ensure the new worktree is marked as safe
+git config --global --add safe.directory "$worktree"
+
 # Update STATE.md focus
 state_file="${root_dir}/STATE.md"
 if [[ -f "$state_file" ]]; then
