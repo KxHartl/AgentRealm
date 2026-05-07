@@ -1,16 +1,16 @@
 name: "TBD Project"
 description: "Project created from agentic-workspace template"
 project_type: "seminar"
-profile: "document" # python | cpp | document
 default_ide: "vscode" # vscode | antigravity
 stack:
   languages: []
   frameworks: []
 default_agents:
   planner: "copilot-cli"
-  coder: "codex-cli"
-  writer: "claude-code"
-  reviewer: "gemini-cli"
+  coder: "copilot-cli"
+  writer: "copilot-cli"
+  reviewer: "copilot-cli"
+skip_external_terminal: false
 paths:
   state: "STATE.md"
   agents: "AGENTS.md"

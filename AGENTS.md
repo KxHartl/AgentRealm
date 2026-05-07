@@ -4,12 +4,12 @@ Global operating rules for humans and AI agents in this repository.
 
 ## Roles
 
-- **Planner**: decomposes goals into tasks and updates `STATE.md` backlog.
+- **Planner**: decomposes goals into tasks and updates `STATE.md` backlog. (Default: `copilot-cli`)
 - **Researcher**: collects and summarizes sources in `docs/references/`.
-- **Coder**: implements code in `src/` and analysis scripts in `analysis/`.
+- **Coder**: implements code in `src/` and analysis scripts in `analysis/`. (Default: `copilot-cli`)
 - **Analyst**: transforms data from `data/raw` to `data/processed`.
-- **Writer**: produces seminar/thesis text in `docs/seminar/`.
-- **Reviewer**: reviews code/text quality and writes reports into `reviews/`.
+- **Writer**: produces seminar/thesis text in `docs/seminar/`. (Default: `copilot-cli`)
+- **Reviewer**: reviews code/text quality and writes reports into `reviews/`. (Default: `copilot-cli`)
 
 ## Non-negotiable rules
 

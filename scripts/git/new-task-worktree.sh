@@ -22,13 +22,18 @@ fi
 echo "Worktree created: $worktree"
 echo "Branch: $branch"
 
-# Open external terminal
-if command -v x-terminal-emulator >/dev/null 2>&1; then
-  x-terminal-emulator --working-directory="$worktree" &
-elif command -v gnome-terminal >/dev/null 2>&1; then
-  gnome-terminal --working-directory="$worktree" &
-elif command -v konsole >/dev/null 2>&1; then
-  konsole --workdir "$worktree" &
+# Check terminal settings
+skip_terminal=$(grep "skip_external_terminal:" "$root_dir/config/project.yaml" | grep -oE "true|false" || echo "false")
+
+if [[ "$skip_terminal" == "false" ]]; then
+  echo "Opening external terminal..."
+  if command -v x-terminal-emulator >/dev/null 2>&1; then
+    x-terminal-emulator --working-directory="$worktree" &
+  elif command -v gnome-terminal >/dev/null 2>&1; then
+    gnome-terminal --working-directory="$worktree" &
+  elif command -v konsole >/dev/null 2>&1; then
+    konsole --workdir "$worktree" &
+  fi
 fi
 
 # Launch IDE
