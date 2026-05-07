@@ -1,13 +1,13 @@
 {
-  "name": "Default Protection",
+  "name": "main",
   "target": "branch",
   "enforcement": "active",
   "conditions": {
     "ref_name": {
+      "exclude": [],
       "include": [
-        "refs/heads/main"
-      ],
-      "exclude": []
+        "~DEFAULT_BRANCH"
+      ]
     }
   },
   "rules": [
@@ -21,12 +21,36 @@
       "type": "pull_request",
       "parameters": {
         "required_approving_review_count": 0,
-        "dismiss_stale_reviews_on_push": false,
+        "dismiss_stale_reviews_on_push": true,
+        "required_reviewers": [],
         "require_code_owner_review": false,
         "require_last_push_approval": false,
         "required_review_thread_resolution": false,
-        "automatic_merge_methods": []
+        "allowed_merge_methods": [
+          "merge",
+          "squash",
+          "rebase"
+        ]
+      }
+    },
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          {
+            "context": "lint"
+          },
+          {
+            "context": "validate-yaml"
+          },
+          {
+            "context": "verify-scripts"
+          }
+        ]
       }
     }
-  ]
+  ],
+  "bypass_actors": []
 }

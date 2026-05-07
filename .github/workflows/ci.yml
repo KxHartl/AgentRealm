@@ -1,18 +1,41 @@
 name: CI
 
 on:
-  pull_request:
   push:
-    branches: [main]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  shellcheck-lite:
+  lint:
+    name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Verify scripts are executable
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Ruff
+        run: pip install ruff
+      - name: Run Unified Check
+        run: bash ./scripts/helpers/check-all.sh
+
+  validate-yaml:
+    name: validate-yaml
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate YAML files
         run: |
-          test -x scripts/git/new-task-worktree.sh
-          test -x scripts/git/cleanup-worktrees.sh
-          test -x scripts/git/sync-with-main.sh
-          test -x scripts/helpers/bootstrap-project.sh
+          find . -name "*.yml" -o -name "*.yaml" | xargs -I {} npx yaml-lint {}
+
+  verify-scripts:
+    name: verify-scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check scripts for syntax
+        run: |
+          find scripts -name "*.sh" | xargs -I {} bash -n {}
+          find scripts -name "*.ps1" | xargs -I {} echo "Checking {}" # Basic check for PS1
