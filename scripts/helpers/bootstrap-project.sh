@@ -2,10 +2,10 @@
 set -euo pipefail
 
 project_name=""
-profile=""
+ide="vscode"
 
 usage() {
-  echo "Usage: $0 --name <project-name> --profile <python|cpp|document>"
+  echo "Usage: $0 --name <project-name> [--ide <vscode|antigravity>]"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -14,8 +14,8 @@ while [[ $# -gt 0 ]]; do
       project_name="$2"
       shift 2
       ;;
-    --profile)
-      profile="$2"
+    --ide)
+      ide="$2"
       shift 2
       ;;
     *)
@@ -25,14 +25,9 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "$project_name" || -z "$profile" ]]; then
+if [[ -z "$project_name" ]]; then
   usage
   exit 1
-fi
-
-if [[ ! -d "profiles/${profile}" ]]; then
-  echo "Unknown profile: $profile"
-  exit 2
 fi
 
 requirements_manifest="config/requirements.list"
@@ -42,9 +37,8 @@ cp config/project.yaml config/project.yaml.bak || true
 cp STATE.md STATE.md.bak || true
 
 sed -i "s/^name: .*/name: \"${project_name}\"/" config/project.yaml
-sed -i "s/^profile: .*/profile: \"${profile}\" # python | cpp | document/" config/project.yaml
+sed -i "s/^default_ide: .*/default_ide: \"${ide}\" # vscode | antigravity/" config/project.yaml
 sed -i "s/^- Name: .*/- Name: ${project_name}/" STATE.md
-sed -i "s/^- Profile: .*/- Profile: ${profile}/" STATE.md
 
 if ! grep -q '^  requirements:' config/project.yaml; then
   printf '\n  requirements: "%s"\n' "$requirements_manifest" >> config/project.yaml
@@ -62,9 +56,23 @@ EOF
 fi
 
 mkdir -p .agents
-cp "profiles/${profile}/README.profile.md" "docs/templates/active-profile.md"
+
+# 1. Check requirements
+echo "Verifying project requirements..."
+bash ./scripts/helpers/check-requirements.sh || echo "Warning: Some requirements are missing. Run with --install if you have brew or apt-get."
+
+# Optional: Apply GitHub ruleset if 'gh' is logged in
+echo "Checking GitHub CLI status..."
+if command -v gh >/dev/null 2>&1; then
+  if gh auth status >/dev/null 2>&1; then
+    echo "Applying GitHub ruleset..."
+    bash ./scripts/helpers/apply-github-config.sh
+  else
+    echo "Not logged in to GitHub CLI. Skipping automatic ruleset application."
+  fi
+fi
 
 echo "Project bootstrapped."
 echo "Name: $project_name"
-echo "Profile: $profile"
+echo "IDE: $ide"
 echo "Requirements manifest: $requirements_manifest"

@@ -4,7 +4,6 @@
 
 - Name: _TBD_
 - Type: _TBD_
-- Profile: _python / cpp / document_
 - Owner: _TBD_
 
 ## Requirements
@@ -15,7 +14,7 @@
 
 ## Current focus
 
-- _No active focus yet._
+- Unifying agents and optimizing terminal profile support.
 
 ## Backlog
 
