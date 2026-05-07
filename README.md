@@ -31,6 +31,12 @@ Clone this template and run the bootstrap script. It will automatically detect m
 | **Windows** | `.\scripts\helpers\bootstrap-project.ps1 -name "My Project"` |
 | **Linux** | `./scripts/helpers/bootstrap-project.sh --name "My Project"` |
 
+#### ⚙️ Bootstrap Options
+| Parameter | Values | Description |
+| :--- | :--- | :--- |
+| `-name` / `--name` | `string` | Name of your project (updates configs and STATE.md). |
+| `-ide` / `--ide` | `vscode`, `antigravity` | Selects your default workspace tool (default: `vscode`). |
+
 ### 2. Configure GitHub (Optional)
 If you are logged into the `gh` CLI, the script will automatically apply branch protection rules from `config/github/ruleset.json`.
 
