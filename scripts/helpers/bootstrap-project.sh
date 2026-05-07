@@ -32,6 +32,10 @@ fi
 
 requirements_manifest="config/requirements.list"
 
+# Backup important config files before modifying
+cp config/project.yaml config/project.yaml.bak || true
+cp STATE.md STATE.md.bak || true
+
 sed -i "s/^name: .*/name: \"${project_name}\"/" config/project.yaml
 sed -i "s/^default_ide: .*/default_ide: \"${ide}\" # vscode | antigravity/" config/project.yaml
 sed -i "s/^- Name: .*/- Name: ${project_name}/" STATE.md
