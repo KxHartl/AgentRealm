@@ -22,6 +22,25 @@ if ($LASTEXITCODE -eq 0) {
 Write-Host "Worktree created: $worktree"
 Write-Host "Branch: $branch"
 
+# Update STATE.md focus
+$stateFile = Join-Path $rootDir "STATE.md"
+if (Test-Path $stateFile) {
+    $content = Get-Content $stateFile
+    $newContent = @()
+    $foundFocus = $false
+    foreach ($line in $content) {
+        $newContent += $line
+        if ($line -match "## Current focus") {
+            $newContent += "- $slug"
+            $foundFocus = $true
+        }
+    }
+    if ($foundFocus) {
+        $newContent | Set-Content $stateFile
+        Write-Host "Updated STATE.md focus with: $slug"
+    }
+}
+
 # Check terminal settings
 $skipTerminalLine = $config | Select-String "skip_external_terminal:"
 $skipTerminal = $false

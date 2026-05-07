@@ -12,6 +12,11 @@ fi
 status=0
 printf '%-10s %-14s %-10s %s\n' "SCOPE" "NAME" "STATUS" "DETAILS"
 
+install_flag=false
+if [[ "${1:-}" == "--install" ]]; then
+  install_flag=true
+fi
+
 while IFS='|' read -r scope name command required min_version install_hint notes; do
   [[ -z "${scope// }" ]] && continue
   [[ "$scope" == \#* ]] && continue
@@ -19,9 +24,18 @@ while IFS='|' read -r scope name command required min_version install_hint notes
   if command -v "$command" >/dev/null 2>&1; then
     printf '%-10s %-14s %-10s %s\n' "$scope" "$name" "OK" "$notes"
   else
-    printf '%-10s %-14s %-10s %s (%s)\n' "$scope" "$name" "MISSING" "$notes" "$install_hint"
-    if [[ "$required" != "optional" && "$required" != "recommended" ]]; then
-      status=1
+    if [[ "$install_flag" == true ]]; then
+      printf '%-10s %-14s %-10s %s\n' "$scope" "$name" "INSTALLING" "Attempting install..."
+      if command -v brew >/dev/null 2>&1; then
+        brew install "$name" || true
+      elif command -v apt-get >/dev/null 2>&1; then
+        sudo apt-get install -y "$name" || true
+      fi
+    else
+      printf '%-10s %-14s %-10s %s (%s)\n' "$scope" "$name" "MISSING" "$notes" "$install_hint"
+      if [[ "$required" != "optional" && "$required" != "recommended" ]]; then
+        status=1
+      fi
     fi
   fi
 done < "$manifest"

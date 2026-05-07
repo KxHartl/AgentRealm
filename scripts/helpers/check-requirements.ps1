@@ -1,3 +1,7 @@
+param (
+    [switch]$Install
+)
+
 $rootDir = git rev-parse --show-toplevel
 $manifest = Join-Path $rootDir "config/requirements.list"
 
@@ -31,9 +35,25 @@ Get-Content $manifest | ForEach-Object {
     if ($found) {
         Write-Host ("{0,-10} {1,-14} {2,-10} {3}" -f $scope, $name, "OK", $notes)
     } else {
-        Write-Host ("{0,-10} {1,-14} {2,-10} {3} ({4})" -f $scope, $name, "MISSING", $notes, $installHint)
-        if ($required -ne "optional" -and $required -ne "recommended") {
-            $status = 1
+        if ($Install) {
+            Write-Host ("{0,-10} {1,-14} {2,-10} {3}" -f $scope, $name, "INSTALLING", "Attempting winget install...")
+            # Try to guess ID from hint or use name
+            $wingetId = $name
+            if ($installHint -match "Install (.*)") {
+                $wingetId = $matches[1]
+            }
+            winget install --id $wingetId --silent --accept-package-agreements --accept-source-agreements
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Successfully installed $name" -ForegroundColor Green
+            } else {
+                Write-Host "Failed to install $name via winget. Please do it manually: $installHint" -ForegroundColor Red
+                $status = 1
+            }
+        } else {
+            Write-Host ("{0,-10} {1,-14} {2,-10} {3} ({4})" -f $scope, $name, "MISSING", $notes, $installHint)
+            if ($required -ne "optional" -and $required -ne "recommended") {
+                $status = 1
+            }
         }
     }
 }
