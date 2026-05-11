@@ -25,11 +25,12 @@ from rag_core.embeddings import get_embeddings
 # ---------------------------------------------------------------------------
 _WORKSPACE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 _SOURCES_DIR = os.path.join(_WORKSPACE_ROOT, "data", "rag", "sources")
+_KNOWLEDGE_DIR = os.path.join(_WORKSPACE_ROOT, "ai", "knowledge")
 _PARSED_DIR = os.path.join(_WORKSPACE_ROOT, "data", "rag", "parsed")
 _VECTOR_STORE_DIR = os.path.join(_WORKSPACE_ROOT, "data", "rag", "vector_store")
 
 # Also index core governance files from the root
-_GOVERNANCE_FILES = ["AGENTS.md", "STATE.md", "README.md"]
+_GOVERNANCE_FILES = ["AGENTS.md", "STATE.md", "README.md", "GEMINI.md", "CLAUDE.md"]
 
 # ---------------------------------------------------------------------------
 # Supported extensions
@@ -72,7 +73,21 @@ def load_sources() -> List[Document]:
     else:
         print(f"  Warning: {_SOURCES_DIR} does not exist.")
 
-    # 2. Load governance files from root
+    # 2. Load from ai/knowledge/
+    if os.path.isdir(_KNOWLEDGE_DIR):
+        for root, _, files in os.walk(_KNOWLEDGE_DIR):
+            for f in files:
+                ext = os.path.splitext(f)[1].lower()
+                if ext in _TEXT_EXTENSIONS:
+                    filepath = os.path.join(root, f)
+                    docs = _load_file(filepath)
+                    for doc in docs:
+                        doc.metadata["file_type"] = ext
+                        doc.metadata["origin"] = "agent_knowledge"
+                    documents.extend(docs)
+                    print(f"  Loaded: {os.path.relpath(filepath, _WORKSPACE_ROOT)}")
+
+    # 3. Load governance files from root
     for gf in _GOVERNANCE_FILES:
         gf_path = os.path.join(_WORKSPACE_ROOT, gf)
         if os.path.isfile(gf_path):

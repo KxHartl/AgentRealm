@@ -22,6 +22,18 @@ Global operating rules for humans and AI agents in this repository.
 7. **Global Guidelines**: Always read and follow `ai/skills/prompts/global.md`.
 8. **RAG data is immutable**: Never write generated code, outputs, or operational data into `data/rag/`. That directory is exclusively for reference literature and the vector store.
 
+## Skill Evolution & Knowledge Capture
+
+To improve workspace efficiency over time, agents must follow these rules:
+
+1. **Skill Discovery**: If a task requires a complex automation script or a specific prompt sequence that could be reused, the Coder/Planner agent should formalize it as a "Skill" in `ai/skills/local/` and register it in `ai/skills/registry.yaml`.
+2. **Lessons Learned**: After completing a difficult or non-obvious task, the agent should record a "lesson" in `ai/knowledge/lessons/<task-slug>.md`. This should include:
+    - What was the challenge?
+    - What was the successful solution?
+    - What should be avoided next time?
+3. **Continuous Improvement**: Agents are encouraged to propose improvements to existing scripts in `ai/scripts/` if they encounter bugs or inefficiencies during task execution.
+4. **Agent Knowledge Base**: Use `ai/knowledge/` to store architectural decisions, pattern libraries, and repository-specific tribal knowledge. This knowledge is indexed by the RAG system to help future agents.
+
 ## Directory Philosophy ("Clean Root")
 
 | Directory | Purpose | Who writes here |
