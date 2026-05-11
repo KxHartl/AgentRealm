@@ -22,6 +22,19 @@ Global operating rules for humans and AI agents in this repository.
 7. **Global Guidelines**: Always read and follow `ai/skills/prompts/global.md`.
 8. **RAG data is immutable**: Never write generated code, outputs, or operational data into `data/rag/`. That directory is exclusively for reference literature and the vector store.
 
+## Skill Evolution & Knowledge Capture (SSOT Architecture)
+
+To improve workspace efficiency over time, agents must follow these rules:
+
+1. **Global Brain SSOT**: This project connects to a Global AgentBrain (`~/.agentbrain`). This is the **Single Source of Truth** for all reusable skills and architectural guidelines.
+2. **Skill Discovery**: If a task requires a complex automation script or a specific prompt sequence that could be reused, the Coder/Planner agent should formalize it as a "Skill" file (using `_TEMPLATE.md`).
+3. **Save Location**:
+   - If the skill is specific ONLY to this project, save it in `ai/skills/local/`.
+   - If the skill is beneficial for ALL projects (e.g., a generic CSV parser, a LaTeX build optimization), save it directly into the `GLOBAL_BRAIN_PATH`.
+4. **Research First**: When facing a complex engineering problem, check the RAG vector store first. Chunks tagged with `source_type: global_skill` contain shared wisdom from the AgentBrain.
+5. **Lessons Learned**: Record project-specific "lessons" in `ai/knowledge/lessons/`. If a lesson applies globally, move it to the Global Brain.
+6. **Continuous Improvement**: Propose improvements to existing scripts in `ai/scripts/` if bugs or inefficiencies are found.
+
 ## Directory Philosophy ("Clean Root")
 
 | Directory | Purpose | Who writes here |
