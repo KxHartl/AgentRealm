@@ -26,8 +26,45 @@ $requirementsManifest = "ai/config/requirements.list"
 (Get-Content ai/config/project.yaml) -replace '^default_ide: .*', "default_ide: `"$ide`" # vscode | antigravity" | Set-Content ai/config/project.yaml
 (Get-Content ai/config/project.yaml) -replace '^rag_mode: .*', "rag_mode: `"$rag`" # none | cloud | local" | Set-Content ai/config/project.yaml
 
-# Update STATE.md
-(Get-Content STATE.md) -replace '^- Name: .*', "- Name: $name" | Set-Content STATE.md
+# Update STATE.md (Full Reset for new project)
+$date = Get-Date -Format "yyyy-MM-dd"
+$cleanState = @"
+# STATE.md
+
+## Project info
+
+- Name: $name
+- Type: seminar
+- Owner: $(whoami)
+
+## Requirements
+
+- Manifest: ai/config/requirements.list
+- Check command: ai/scripts/helpers/check-requirements.ps1
+- Installation status: _Not checked yet._
+
+## Current focus
+- project-init
+
+- **Project initialized**: Started new project based on AgentRealm V2 template.
+
+## Backlog
+
+- [ ] Add project source files to src/
+- [ ] Add research documents to data/rag/sources/
+- [ ] Define project tasks in docs/
+
+## Changelog
+
+- $date: **Project Initialized** — Template bootstrapped with name: $name
+"@
+$cleanState | Set-Content STATE.md
+
+# Update README.md
+if (Test-Path README.md) {
+    (Get-Content README.md) -replace '^# AgentRealm', "# $name" | Set-Content README.md
+    (Get-Content README.md) -replace 'Universal template for \*\*projects, seminars, and research\*\*', "Project for **$name**, built using AgentRealm template" | Set-Content README.md
+}
 
 if (-not (Select-String -Path ai/config/project.yaml -Pattern '^  requirements:')) {
     Add-Content -Path ai/config/project.yaml -Value "`n  requirements: `"$requirementsManifest`""

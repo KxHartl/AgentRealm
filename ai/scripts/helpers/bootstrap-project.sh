@@ -46,10 +46,49 @@ requirements_manifest="ai/config/requirements.list"
 cp ai/config/project.yaml ai/config/project.yaml.bak || true
 cp STATE.md STATE.md.bak || true
 
+# Update project.yaml
 sed -i "s/^name: .*/name: \"${project_name}\"/" ai/config/project.yaml
 sed -i "s/^default_ide: .*/default_ide: \"${ide}\" # vscode | antigravity/" ai/config/project.yaml
 sed -i "s/^rag_mode: .*/rag_mode: \"${rag}\" # none | cloud | local/" ai/config/project.yaml
-sed -i "s/^- Name: .*/- Name: ${project_name}/" STATE.md
+
+# Update STATE.md (Full Reset for new project)
+curr_date=$(date +%Y-%m-%d)
+cat <<EOF > STATE.md
+# STATE.md
+
+## Project info
+
+- Name: ${project_name}
+- Type: seminar
+- Owner: $(whoami)
+
+## Requirements
+
+- Manifest: ai/config/requirements.list
+- Check command: ai/scripts/helpers/check-requirements.sh
+- Installation status: _Not checked yet._
+
+## Current focus
+- project-init
+
+- **Project initialized**: Started new project based on AgentRealm V2 template.
+
+## Backlog
+
+- [ ] Add project source files to src/
+- [ ] Add research documents to data/rag/sources/
+- [ ] Define project tasks in docs/
+
+## Changelog
+
+- ${curr_date}: **Project Initialized** — Template bootstrapped with name: ${project_name}
+EOF
+
+# Update README.md
+if [[ -f README.md ]]; then
+  sed -i "s/^# AgentRealm/# ${project_name}/" README.md
+  sed -i "s/Universal template for \*\*projects, seminars, and research\*\*/Project for **${project_name}**, built using AgentRealm template/" README.md
+fi
 
 if ! grep -q '^  requirements:' ai/config/project.yaml; then
   printf '\n  requirements: "%s"\n' "$requirements_manifest" >> ai/config/project.yaml
