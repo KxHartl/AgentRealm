@@ -2,16 +2,20 @@ param (
     [string]$name,
     [string]$ide = "vscode",
     [ValidateSet("none", "cloud", "local")]
-    [string]$rag = "none"
+    [string]$rag = "none",
+    [string]$brain = ""
 )
 
 function Show-Usage {
-    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>]"
+    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <repo-url>]"
     Write-Host ""
     Write-Host "RAG Modes:"
     Write-Host "  none   (default) No RAG. Zero Python overhead."
     Write-Host "  cloud  Gemini API embeddings. ~200 MB footprint. Requires GOOGLE_API_KEY."
     Write-Host "  local  Local sentence-transformers model. ~1.2 GB footprint. Works offline."
+    Write-Host ""
+    Write-Host "Global Brain:"
+    Write-Host "  -brain <url>  Link a shared knowledge repository into ai/knowledge/global/"
 }
 
 if (-not $name) {
@@ -141,9 +145,27 @@ if (Get-Command gh -ErrorAction SilentlyContinue) {
     }
 }
 
+# 3. Connect to Global Brain
+if ($brain) {
+    Write-Host "Connecting to Global Brain..." -ForegroundColor Cyan
+    $brainPath = "ai/knowledge/global"
+    if (-not (Test-Path $brainPath)) {
+        git clone $brain $brainPath
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host "Global Brain connected successfully." -ForegroundColor Green
+        } else {
+            Write-Host "Failed to clone Global Brain repository." -ForegroundColor Red
+        }
+    } else {
+        Write-Host "Global Brain directory already exists. Skipping clone." -ForegroundColor Gray
+    }
+}
+
 Write-Host ""
 Write-Host "Project bootstrapped." -ForegroundColor Green
 Write-Host "  Name: $name"
 Write-Host "  IDE:  $ide"
 Write-Host "  RAG:  $rag"
+if ($brain) { Write-Host "  Brain: $brain" }
 Write-Host "  Requirements: $requirementsManifest"
+

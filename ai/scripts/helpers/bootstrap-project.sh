@@ -4,14 +4,18 @@ set -euo pipefail
 project_name=""
 ide="vscode"
 rag="none"
+brain=""
 
 usage() {
-  echo "Usage: $0 --name <project-name> [--ide <vscode|antigravity>] [--rag <none|cloud|local>]"
+  echo "Usage: $0 --name <project-name> [--ide <vscode|antigravity>] [--rag <none|cloud|local>] [--brain <repo-url>]"
   echo ""
   echo "RAG Modes:"
   echo "  none   (default) No RAG. Zero Python overhead."
   echo "  cloud  Gemini API embeddings. ~200 MB footprint. Requires GOOGLE_API_KEY."
   echo "  local  Local sentence-transformers model. ~1.2 GB footprint. Works offline."
+  echo ""
+  echo "Global Brain:"
+  echo "  --brain <url>  Link a shared knowledge repository into ai/knowledge/global/"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -26,6 +30,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --rag)
       rag="$2"
+      shift 2
+      ;;
+    --brain)
+      brain="$2"
       shift 2
       ;;
     *)
@@ -146,9 +154,27 @@ if command -v gh >/dev/null 2>&1; then
   fi
 fi
 
+# 3. Connect to Global Brain
+if [[ -n "$brain" ]]; then
+  echo "Connecting to Global Brain..."
+  brain_path="ai/knowledge/global"
+  if [[ ! -d "$brain_path" ]]; then
+    git clone "$brain" "$brain_path"
+    if [[ $? -eq 0 ]]; then
+      echo "Global Brain connected successfully."
+    else
+      echo "Failed to clone Global Brain repository."
+    fi
+  else
+    echo "Global Brain directory already exists. Skipping clone."
+  fi
+fi
+
 echo ""
 echo "Project bootstrapped."
 echo "  Name: $project_name"
 echo "  IDE:  $ide"
 echo "  RAG:  $rag"
+[[ -n "$brain" ]] && echo "  Brain: $brain"
 echo "  Requirements: $requirements_manifest"
+

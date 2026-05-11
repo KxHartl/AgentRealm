@@ -96,6 +96,16 @@ RAG is **opt-in**. By default, no AI/ML packages are installed (zero overhead).
 .\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -rag local
 ```
 
+### Global Brain (Cross-Project Knowledge)
+
+You can link a shared repository (e.g., `AgentBrain`) to keep skills and lessons learned synchronized across all your projects:
+
+```powershell
+.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -brain "git@github.com:user/AgentBrain.git"
+```
+
+The bootstrap script will clone it into `ai/knowledge/global/`, and the RAG pipeline will automatically index it.
+
 ### Cloud Mode Setup (Gemini API)
 
 1. Get a free API key from [Google AI Studio](https://aistudio.google.com/apikey)
