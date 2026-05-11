@@ -40,13 +40,17 @@ cmake-build-*/
 .env.*
 !.env.example
 
-# Agent sandboxes
-.agents/
-.agents/*/node_modules/
-.agents/*/.venv/
-.agents/*/build/
+# Agent sandboxes (worktrees are created/removed dynamically)
+ai/worktrees/
+ai/worktrees/*/node_modules/
+ai/worktrees/*/.venv/
+ai/worktrees/*/build/
+
+# RAG vector store (large, auto-generated)
+data/rag/vector_store/
+data/rag/parsed/
 
 # Data/cache outputs (keep structure, ignore heavy generated outputs)
-data/processed/**/*.parquet
-data/processed/**/*.feather
-analysis/reports/generated/
+data/process/output/**/*.parquet
+data/process/output/**/*.feather
+data/process/intermediate/
