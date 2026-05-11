@@ -9,7 +9,7 @@ Global operating rules for humans and AI agents in this repository.
 - **Coder**: implements code in `src/` and analysis scripts. (Default: `copilot-cli`)
 - **Analyst**: transforms data from `data/process/raw` to `data/process/output`.
 - **Writer**: produces seminar/thesis text in `docs/`. (Default: `copilot-cli`)
-- **Reviewer**: reviews code/text quality and writes reports into `reviews/`. (Default: `copilot-cli`)
+- **Reviewer (QA)**: acts as a strict gatekeeper. Checks for edge cases, security flaws, and syntax errors. Must approve all PRs.
 
 ## Non-negotiable rules
 
@@ -21,6 +21,8 @@ Global operating rules for humans and AI agents in this repository.
 6. Reviewer must only use task brief + diff + standards; no implementer chat history.
 7. **Global Guidelines**: Always read and follow `ai/skills/prompts/global.md`.
 8. **RAG data is immutable**: Never write generated code, outputs, or operational data into `data/rag/`. That directory is exclusively for reference literature and the vector store.
+9. **Git Guardrails**: All agents must respect the pre-commit and pre-push hooks installed via `ai/scripts/git/setup-guardrails.ps1`. Force-pushing or resetting hard is strictly prohibited for AI agents.
+10. **QA Mandate**: No task is considered 'Done' until the Reviewer (QA) agent has verified the implementation against the `qa_reviewer_agent.md` standard.
 
 ## Skill Evolution & Knowledge Capture (SSOT Architecture)
 

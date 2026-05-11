@@ -69,6 +69,22 @@ if (-not (Test-Path .env)) {
     Copy-Item .env.example .env
 }
 
+# .env Verification (Guardrail)
+Write-Host "Verifying .env security..." -ForegroundColor Cyan
+$envContent = Get-Content .env
+$dangerousKeys = @("GOOGLE_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "QDRANT_API_KEY")
+foreach ($key in $dangerousKeys) {
+    if ($envContent -match "^$key=(?!YOUR_).*$") {
+        Write-Host "WARNING: Real API key detected for $key in .env! Ensure this file is never committed." -ForegroundColor Yellow
+    }
+}
+
+# Setup Git Guardrails
+if (Test-Path ai/scripts/git/setup-guardrails.ps1) {
+    Write-Host "Installing Git Guardrails..." -ForegroundColor Cyan
+    .\ai/scripts/git/setup-guardrails.ps1
+}
+
 # 3. Resolve and Verify Global Brain
 $homeDir = [System.Environment]::GetFolderPath("UserProfile")
 $brainPath = "$homeDir\.agentbrain"
@@ -81,7 +97,12 @@ if (Test-Path $brainPath) {
         git pull origin main
         popd
     }
-    Write-Host "Global Brain connected." -ForegroundColor Green
+    # Sync and Cache Global Brain locally
+    if (Test-Path ai/scripts/agents/sync-brain.ps1) {
+        Write-Host "Syncing Global Brain to local cache..." -ForegroundColor Cyan
+        .\ai/scripts/agents/sync-brain.ps1
+    }
+    Write-Host "Global Brain connected and cached in ai/brain." -ForegroundColor Green
 } else {
     Write-Host "Warning: Global Brain not found at $brainPath. RAG will only use local project data." -ForegroundColor Yellow
 }

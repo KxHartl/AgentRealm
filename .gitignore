@@ -35,10 +35,12 @@ cmake-build-*/
 *.out
 *.toc
 
-# Environment / secrets
+# Environment / secrets / Personal scratchpads
 .env
 .env.*
 !.env.example
+IDEAS.md
+TODO.md
 
 # Agent sandboxes (worktrees are created/removed dynamically)
 ai/worktrees/
