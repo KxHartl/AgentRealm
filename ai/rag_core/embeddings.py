@@ -20,7 +20,8 @@ def _read_rag_mode() -> str:
         with open(_CONFIG_PATH, "r", encoding="utf-8") as f:
             for line in f:
                 if line.strip().startswith("rag_mode:"):
-                    value = line.split(":", 1)[1].strip().strip('"').strip("'")
+                    # Split by colon, take value, split by comment, take first part, strip
+                    value = line.split(":", 1)[1].split("#")[0].strip().strip('"').strip("'")
                     return value
     except FileNotFoundError:
         pass

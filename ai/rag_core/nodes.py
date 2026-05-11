@@ -7,6 +7,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
+from langchain_core.documents import Document
 from .state import GraphState
 from .embeddings import get_embeddings
 
@@ -30,13 +31,77 @@ def _get_vector_store() -> Chroma:
 # Graph Nodes
 # ---------------------------------------------------------------------------
 
+def _generate_queries(question: str) -> list[str]:
+    """Generate multiple versions of the question for RAG-fusion."""
+    # In a production setting, use an LLM. Here's the logic for it.
+    print(f"  Generating variations for: {question}")
+    try:
+        from langchain_google_genai import ChatGoogleGenerativeAI
+        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", "You are an AI assistant that generates three different versions of a user question to retrieve relevant documents from a vector database. \n"
+                       "By generating multiple perspectives on the user query, your goal is to help the user overcome some of the limitations of distance-based similarity search. \n"
+                       "Provide these alternative questions separated by newlines. No intro/outro."),
+            ("human", "{question}")
+        ])
+        chain = prompt | llm | StrOutputParser()
+        response = chain.invoke({"question": question})
+        queries = [q.strip() for q in response.split("\n") if q.strip()]
+        return queries[:3] + [question]
+    except Exception as e:
+        print(f"  Query generation failed, using original: {e}")
+        return [question]
+
+def _fuse_documents(all_docs: list[Document]) -> list[Document]:
+    """Simple deduplication and fusion of documents."""
+    # For a more advanced version, implement Reciprocal Rank Fusion (RRF)
+    seen_contents = set()
+    unique_docs = []
+    for doc in all_docs:
+        if doc.page_content not in seen_contents:
+            unique_docs.append(doc)
+            seen_contents.add(doc.page_content)
+    return unique_docs
+
+def _rerank_documents(question: str, documents: list[Document]) -> list[Document]:
+    """Re-rank documents based on keyword overlap (lightweight Cross-Encoder alternative)."""
+    # In production, use FlashRank or sentence-transformers cross-encoder.
+    print(f"  Re-ranking {len(documents)} documents...")
+    scored_docs = []
+    keywords = set(question.lower().split())
+    
+    for doc in documents:
+        content_lower = doc.page_content.lower()
+        score = sum(2 for kw in keywords if kw in content_lower) # Keyword match
+        # Boost if keyword is in the first 200 characters
+        score += sum(1 for kw in keywords if kw in content_lower[:200])
+        scored_docs.append((score, doc))
+        
+    # Sort by score descending
+    scored_docs.sort(key=lambda x: x[0], reverse=True)
+    return [doc for score, doc in scored_docs]
+
 def retrieve(state: GraphState) -> Dict[str, Any]:
-    """Retrieve documents from the local vector store."""
-    print("--- RETRIEVE ---")
+    """Retrieve documents from the local vector store with RAG-Fusion and Re-ranking."""
+    print("--- RETRIEVE (FUSION & RERANK) ---")
     question = state["question"]
     db = _get_vector_store()
-    documents = db.similarity_search(question, k=5)
-    return {"documents": documents, "question": question}
+    
+    # 1. RAG-Fusion
+    queries = _generate_queries(question)
+    
+    all_docs = []
+    for q in queries:
+        docs = db.similarity_search(q, k=3)
+        all_docs.extend(docs)
+        
+    # 2. Fusion
+    unique_docs = _fuse_documents(all_docs)
+    
+    # 3. Re-ranking
+    reranked_docs = _rerank_documents(question, unique_docs)
+    
+    return {"documents": reranked_docs, "question": question}
 
 
 def grade_documents(state: GraphState) -> Dict[str, Any]:

@@ -13,15 +13,16 @@
 - Installation status: _Not checked yet._
 
 ## Current focus
-- v2-refactor
+- v3-enterprise-hardening
 
-- **AgentRealm V2**: Clean Root architecture with CRAG pipeline.
+- **AgentRealm V3.0**: Enterprise Guardrails, Advanced RAG (Fusion/Rerank), and Evaluation Pipeline.
 
 ## Backlog
 
+- [ ] Test RAG Evaluation Pipeline with real-world scenarios.
+- [ ] Implement automated Cross-Encoder setup in bootstrap.
+- [ ] Refine QA Reviewer agent prompts for specific languages.
 - [ ] Test CRAG pipeline end-to-end with sample documents.
-- [ ] Add Docling support for complex PDF parsing (optional).
-- [ ] Create automated "Project Initialization" walkthrough for new users.
 
 ## Changelog
 
