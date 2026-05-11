@@ -6,3 +6,6 @@
 # RAG requirements are in:
 #   ai/config/requirements-rag-cloud.txt
 #   ai/config/requirements-rag-local.txt
+
+python-dotenv
+pyyaml

@@ -2,12 +2,11 @@ param (
     [string]$name,
     [string]$ide = "vscode",
     [ValidateSet("none", "cloud", "local")]
-    [string]$rag = "none",
-    [string]$brain = ""
+    [string]$rag = "none"
 )
 
 function Show-Usage {
-    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <repo-url>]"
+    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>]"
     Write-Host ""
     Write-Host "RAG Modes:"
     Write-Host "  none   (default) No RAG. Zero Python overhead."
@@ -15,7 +14,7 @@ function Show-Usage {
     Write-Host "  local  Local sentence-transformers model. ~1.2 GB footprint. Works offline."
     Write-Host ""
     Write-Host "Global Brain:"
-    Write-Host "  -brain <url>  Link a shared knowledge repository into ai/knowledge/global/"
+    Write-Host "  This project automatically connects to ~/.agentbrain as the SSOT."
 }
 
 if (-not $name) {
@@ -25,12 +24,12 @@ if (-not $name) {
 
 $requirementsManifest = "ai/config/requirements.list"
 
-# Update ai/config/project.yaml
+# 1. Update project.yaml & STATE.md
+Write-Host "Updating project metadata..." -ForegroundColor Cyan
 (Get-Content ai/config/project.yaml) -replace '^name: .*', "name: `"$name`"" | Set-Content ai/config/project.yaml
 (Get-Content ai/config/project.yaml) -replace '^default_ide: .*', "default_ide: `"$ide`" # vscode | antigravity" | Set-Content ai/config/project.yaml
 (Get-Content ai/config/project.yaml) -replace '^rag_mode: .*', "rag_mode: `"$rag`" # none | cloud | local" | Set-Content ai/config/project.yaml
 
-# Update STATE.md (Full Reset for new project)
 $date = Get-Date -Format "yyyy-MM-dd"
 $cleanState = @"
 # STATE.md
@@ -50,19 +49,42 @@ $cleanState = @"
 ## Current focus
 - project-init
 
-- **Project initialized**: Started new project based on AgentRealm V2 template.
+- **AgentRealm V2.4**: Integrated Global AgentBrain (~/.agentbrain).
 
 ## Backlog
 
 - [ ] Add project source files to src/
 - [ ] Add research documents to data/rag/sources/
-- [ ] Define project tasks in docs/
+- [ ] Sync Global Brain skills: .\ai\scripts\agents\sync-brain.ps1
 
 ## Changelog
 
-- $date: **Project Initialized** — Template bootstrapped with name: $name
+- $date: **Project Initialized** — V2.4 Architecture with Global AgentBrain.
 "@
 $cleanState | Set-Content STATE.md
+
+# 2. Setup .env from .env.example
+if (-not (Test-Path .env)) {
+    Write-Host "Creating .env from .env.example..." -ForegroundColor Cyan
+    Copy-Item .env.example .env
+}
+
+# 3. Resolve and Verify Global Brain
+$homeDir = [System.Environment]::GetFolderPath("UserProfile")
+$brainPath = "$homeDir\.agentbrain"
+
+Write-Host "Connecting to Global AgentBrain at $brainPath..." -ForegroundColor Cyan
+if (Test-Path $brainPath) {
+    if (Test-Path "$brainPath\.git") {
+        Write-Host "Brain is a git repo. Pulling latest skills..." -ForegroundColor Cyan
+        pushd $brainPath
+        git pull origin main
+        popd
+    }
+    Write-Host "Global Brain connected." -ForegroundColor Green
+} else {
+    Write-Host "Warning: Global Brain not found at $brainPath. RAG will only use local project data." -ForegroundColor Yellow
+}
 
 # Update README.md
 if (Test-Path README.md) {
@@ -70,34 +92,15 @@ if (Test-Path README.md) {
     (Get-Content README.md) -replace 'Universal template for \*\*projects, seminars, and research\*\*', "Project for **$name**, built using AgentRealm template" | Set-Content README.md
 }
 
-if (-not (Select-String -Path ai/config/project.yaml -Pattern '^  requirements:')) {
-    Add-Content -Path ai/config/project.yaml -Value "`n  requirements: `"$requirementsManifest`""
-}
-
-if (-not (Select-String -Path STATE.md -Pattern '## Requirements')) {
-    $requirementsBlock = @"
-
-## Requirements
-
-- Manifest: ai/config/requirements.list
-- Check command: ai/scripts/helpers/check-requirements.ps1
-- Installation status: _Not checked yet._
-"@
-    Add-Content -Path STATE.md -Value $requirementsBlock
-}
-
 if (-not (Test-Path ai/worktrees)) {
-    New-Item -ItemType Directory -Path ai/worktrees
+    New-Item -ItemType Directory -Path ai/worktrees -Force | Out-Null
 }
 
-# 1. Check and install requirements
+# 4. Check and install requirements
 Write-Host "Verifying project requirements..." -ForegroundColor Cyan
 .\ai\scripts\helpers\check-requirements.ps1 -Install
-if ($LASTEXITCODE -ne 0) {
-    Write-Host "Warning: Some requirements are still missing. You might need to install them manually." -ForegroundColor Yellow
-}
 
-# 2. Setup Python Virtual Environment
+# 5. Setup Python Virtual Environment
 if (Get-Command python -ErrorAction SilentlyContinue) {
     Write-Host "Setting up Python virtual environment..." -ForegroundColor Cyan
     if (-not (Test-Path .venv)) {
@@ -110,16 +113,11 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
 
     # Install RAG requirements based on mode
     if ($rag -eq "cloud") {
-        Write-Host "Installing RAG Cloud dependencies (Gemini API embeddings)..." -ForegroundColor Cyan
+        Write-Host "Installing RAG Cloud dependencies..." -ForegroundColor Cyan
         .\.venv\Scripts\pip.exe install -r ai/config/requirements-rag-cloud.txt
-        Write-Host "RAG Cloud mode installed." -ForegroundColor Green
     } elseif ($rag -eq "local") {
-        Write-Host "Installing RAG Local dependencies (sentence-transformers)..." -ForegroundColor Yellow
-        Write-Host "This will download ~1 GB of PyTorch dependencies." -ForegroundColor Yellow
+        Write-Host "Installing RAG Local dependencies..." -ForegroundColor Yellow
         .\.venv\Scripts\pip.exe install -r ai/config/requirements-rag-local.txt
-        Write-Host "RAG Local mode installed." -ForegroundColor Green
-    } else {
-        Write-Host "RAG disabled. No AI/ML packages installed." -ForegroundColor Gray
     }
 
     # Update VS Code settings for Python
@@ -133,39 +131,9 @@ if (Get-Command python -ErrorAction SilentlyContinue) {
     }
 }
 
-# Optional: Apply GitHub ruleset if 'gh' is logged in
-Write-Host "Checking GitHub CLI status..."
-if (Get-Command gh -ErrorAction SilentlyContinue) {
-    gh auth status --hostname github.com *> $null
-    if ($LASTEXITCODE -eq 0) {
-        Write-Host "Applying GitHub ruleset..."
-        .\ai\scripts\helpers\apply-github-config.ps1
-    } else {
-        Write-Host "Not logged in to GitHub CLI. Skipping automatic ruleset application." -ForegroundColor Gray
-    }
-}
-
-# 3. Connect to Global Brain
-if ($brain) {
-    Write-Host "Connecting to Global Brain..." -ForegroundColor Cyan
-    $brainPath = "ai/knowledge/global"
-    if (-not (Test-Path $brainPath)) {
-        git clone $brain $brainPath
-        if ($LASTEXITCODE -eq 0) {
-            Write-Host "Global Brain connected successfully." -ForegroundColor Green
-        } else {
-            Write-Host "Failed to clone Global Brain repository." -ForegroundColor Red
-        }
-    } else {
-        Write-Host "Global Brain directory already exists. Skipping clone." -ForegroundColor Gray
-    }
-}
-
 Write-Host ""
-Write-Host "Project bootstrapped." -ForegroundColor Green
-Write-Host "  Name: $name"
-Write-Host "  IDE:  $ide"
-Write-Host "  RAG:  $rag"
-if ($brain) { Write-Host "  Brain: $brain" }
-Write-Host "  Requirements: $requirementsManifest"
-
+Write-Host "Project bootstrapped (V2.4)." -ForegroundColor Green
+Write-Host "  Name:  $name"
+Write-Host "  Brain: $brainPath"
+Write-Host "  RAG:   $rag"
+Write-Host "  Env:   .env created"

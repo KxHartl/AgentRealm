@@ -14,7 +14,7 @@ default_agents:
 skip_external_terminal: false
 paths:
   state: "STATE.md"
-  agents: "AGENTS.md"
+  agents: "ai/config/AGENTS.md"
   sources: "data/rag/sources"
   tasks: "docs/seminar/01-task.md"
   requirements: "ai/config/requirements.list"

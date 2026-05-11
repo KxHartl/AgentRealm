@@ -152,5 +152,5 @@ The CRAG pipeline will: **Retrieve** from your local knowledge base → **Grade*
 
 ## Governance
 
-- `AGENTS.md` — Mandatory rules for all human and AI agents.
+- `ai/config/AGENTS.md` — Mandatory rules for all human and AI agents.
 - `STATE.md` — The "Live Brain" containing the project backlog and current focus.
