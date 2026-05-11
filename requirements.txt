@@ -1,0 +1,8 @@
+# AgentRealm - Base Python Dependencies
+# No RAG packages included by default. To enable RAG, bootstrap with:
+#   --rag cloud   (lightweight, uses Gemini API for embeddings)
+#   --rag local   (heavyweight, uses local sentence-transformers model)
+#
+# RAG requirements are in:
+#   ai/config/requirements-rag-cloud.txt
+#   ai/config/requirements-rag-local.txt
