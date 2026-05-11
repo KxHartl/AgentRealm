@@ -19,7 +19,7 @@ jobs:
       - name: Install Ruff
         run: pip install ruff
       - name: Run Unified Check
-        run: bash ./scripts/helpers/check-all.sh
+        run: bash ./ai/scripts/helpers/check-all.sh
 
   validate-yaml:
     name: validate-yaml
@@ -37,5 +37,5 @@ jobs:
       - uses: actions/checkout@v4
       - name: Check scripts for syntax
         run: |
-          find scripts -name "*.sh" | xargs -I {} bash -n {}
-          find scripts -name "*.ps1" | xargs -I {} echo "Checking {}" # Basic check for PS1
+          find ai/scripts -name "*.sh" | xargs -I {} bash -n {}
+          find ai/scripts -name "*.ps1" | xargs -I {} echo "Checking {}" # Basic check for PS1
