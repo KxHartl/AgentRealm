@@ -4,6 +4,31 @@ Universal template for **projects, seminars, and research** with a seamless Huma
 
 ---
 
+## 🚀 Bootstrap New Project
+
+The quickest way to get started is using the automated bootstrap scripts. This handles virtual environments, requirement installations, RAG configurations, and linking external knowledge like AgentBrain.
+
+### Recommended Default Commands
+
+| OS | Command |
+| :--- | :--- |
+| **Windows** | `.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -ide antigravity -rag cloud -brain "C:\Users\KHartl\.agentbrain"` |
+| **Linux/Mac** | `./ai/scripts/helpers/bootstrap-project.sh --name "My Project" --ide antigravity --rag cloud --brain "~/.agentbrain"` |
+
+### All Bootstrap Flags & Options
+
+When running the `bootstrap-project` script, customize your configuration with these flags:
+
+- `-name` / `--name` : **(Required)** The title of your new project.
+- `-ide` / `--ide` : IDE setup to use. Recommended: `antigravity` (default), `vscode`.
+- `-rag` / `--rag` : Choose your AI embedding/RAG strategy:
+  - `none`: Minimal setup, ~0MB `.venv`, fully offline (default).
+  - `cloud`: Uses Gemini API for generation and embeddings (~200MB `.venv`). Fast, but requires internet and `GOOGLE_API_KEY`.
+  - `local`: Uses local models like `sentence-transformers` (~1.2GB `.venv`). Fully offline and private, but slow and large.
+- `-brain` / `--brain` : Path to a global skills repository (e.g., `AgentBrain`) to link cross-project learnings. Can be a local path or Git URL.
+
+---
+
 ## Clean Root Philosophy
 
 Your repository root shows only what matters: **your code, your data, your documents.**
@@ -31,23 +56,6 @@ data/
 ```
 
 > **Rule**: RAG data is **Read-Only** reference material for the LLM. Process data is **Read-Write** operational data for your specific project.
-
----
-
-## Quick Start
-
-### 1. Initialize & Install
-
-Clone this template and run the bootstrap script:
-
-| OS          | Command                                                                                            |
-| :---------- | :------------------------------------------------------------------------------------------------- |
-| **Windows** | `.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -ide "vscode" -rag none`            |
-| **Linux**   | `./ai/scripts/helpers/bootstrap-project.sh --name "My Project" --ide "antigravity" --rag none`      |
-
-### 2. Configure GitHub (Optional)
-
-If you are logged into the `gh` CLI, the script will automatically apply branch protection rules from `ai/config/github/ruleset.json`.
 
 ---
 
@@ -86,25 +94,11 @@ RAG is **opt-in**. By default, no AI/ML packages are installed (zero overhead).
 | **cloud** | `-rag cloud` | ~200 MB | Gemini API | ❌ |
 | **local** | `-rag local` | ~1.2 GB | sentence-transformers | ✅ |
 
-### Enable RAG
-
-```powershell
-# Cloud mode (lightweight, needs GOOGLE_API_KEY)
-.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -rag cloud
-
-# Local mode (heavy, works offline)
-.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -rag local
-```
-
 ### Global Brain (Cross-Project Knowledge)
 
-You can link a shared repository (e.g., `AgentBrain`) to keep skills and lessons learned synchronized across all your projects:
+When you use the `-brain` flag in the bootstrap commands above, the script links your shared `AgentBrain` repository to keep skills and lessons learned synchronized across all your projects.
 
-```powershell
-.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -brain "git@github.com:user/AgentBrain.git"
-```
-
-The bootstrap script will clone it into `ai/knowledge/global/`, and the RAG pipeline will automatically index it.
+The bootstrap script clones or links it into `ai/knowledge/global/`, and the RAG pipeline automatically indexes it.
 
 ### Cloud Mode Setup (Gemini API)
 
