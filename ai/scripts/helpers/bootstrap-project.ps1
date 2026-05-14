@@ -4,21 +4,19 @@ param (
     [ValidateSet("none", "cloud", "local")]
     [string]$rag = "none",
     [ValidateSet("none", "global", "local")]
-    [string]$brain = "global"
+    [string]$brain = "global",
+    [string]$brainRepo = "https://github.com/KxHartl/AgentBrain.git"
 )
 
 function Show-Usage {
-    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <none|global|local>]"
+    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <none|global|local>] [-brainRepo <url>]"
     Write-Host ""
-    Write-Host "RAG Modes:"
-    Write-Host "  none   (default) No RAG. Zero Python overhead."
-    Write-Host "  cloud  Gemini API embeddings. ~200 MB footprint. Requires GOOGLE_API_KEY."
-    Write-Host "  local  Local sentence-transformers model. ~1.2 GB footprint. Works offline."
-    Write-Host ""
-    Write-Host "Brain Modes:"
-    Write-Host "  none   No Global AgentBrain connection."
-    Write-Host "  global (default) Connects to C:\Users\KHartl\.agentbrain (Windows) or ~/.agentrealm (Linux)."
-    Write-Host "  local  Uses project-specific brain in ai/brain/."
+    Write-Host "Options:"
+    Write-Host "  -name      Project name (required)."
+    Write-Host "  -ide       IDE to use (vscode|antigravity). Default: vscode."
+    Write-Host "  -rag       RAG mode (none|cloud|local). Default: none."
+    Write-Host "  -brain     Brain mode (none|global|local). Default: global."
+    Write-Host "  -brainRepo Source URL for AgentBrain clone."
 }
 
 if (-not $name) {
@@ -94,35 +92,53 @@ if (Test-Path ai/scripts/git/setup-guardrails.ps1) {
 $brainPath = ""
 if ($brain -eq "global") {
     $homeDir = [System.Environment]::GetFolderPath("UserProfile")
-    $brainPath = "$homeDir\.agentbrain"
+    # V3.0 Standard: .agentrealm for global brain
+    $brainPath = Join-Path $homeDir ".agentrealm"
+    
+    if (-not (Test-Path $brainPath)) {
+        Write-Host "Global AgentBrain not found at $brainPath. Attempting to clone from $brainRepo..." -ForegroundColor Cyan
+        git clone $brainRepo $brainPath
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Warning: Failed to clone AgentBrain. Creating empty directory." -ForegroundColor Yellow
+            New-Item -ItemType Directory -Path $brainPath -Force | Out-Null
+        }
+    }
 } elseif ($brain -eq "local") {
-    $brainPath = "ai/brain"
+    $brainPath = Join-Path (Get-Location) "ai/brain"
+    if (-not (Test-Path $brainPath)) {
+        New-Item -ItemType Directory -Path $brainPath -Force | Out-Null
+    }
 }
 
 if ($brain -ne "none") {
     Write-Host "Connecting to AgentBrain ($brain) at $brainPath..." -ForegroundColor Cyan
-    if (Test-Path $brainPath) {
-        if (Test-Path "$brainPath\.git") {
-            Write-Host "Brain is a git repo. Pulling latest skills..." -ForegroundColor Cyan
-            pushd $brainPath
-            git pull origin main
-            popd
+    
+    # Update .env
+    $envPath = ".env"
+    if (Test-Path $envPath) {
+        $content = Get-Content $envPath
+        if ($content -match "GLOBAL_BRAIN_PATH=") {
+            $content = $content -replace "GLOBAL_BRAIN_PATH=.*", "GLOBAL_BRAIN_PATH=$brainPath"
+        } else {
+            $content += "GLOBAL_BRAIN_PATH=$brainPath"
         }
-        # Sync and Cache Brain locally
-        if ($brain -eq "global" -and (Test-Path ai/scripts/agents/sync-brain.ps1)) {
-            Write-Host "Syncing Global Brain to local cache..." -ForegroundColor Cyan
-            .\ai/scripts/agents/sync-brain.ps1
-        }
-        Write-Host "AgentBrain connected." -ForegroundColor Green
-    } else {
-        Write-Host "Warning: AgentBrain not found at $brainPath." -ForegroundColor Yellow
-        if ($brain -eq "local") {
-            New-Item -ItemType Directory -Path $brainPath -Force | Out-Null
-            Write-Host "Created local brain directory at $brainPath." -ForegroundColor Gray
-        }
+        $content | Set-Content $envPath
     }
+
+    if (Test-Path "$brainPath\.git") {
+        Write-Host "Brain is a git repo. Pulling latest skills..." -ForegroundColor Cyan
+        pushd $brainPath
+        git pull origin main
+        popd
+    }
+    
+    if (Test-Path ai/scripts/agents/sync-brain.ps1) {
+        Write-Host "Syncing Brain to local cache..." -ForegroundColor Cyan
+        .\ai/scripts/agents/sync-brain.ps1
+    }
+    Write-Host "AgentBrain connected and cached." -ForegroundColor Green
 } else {
-    Write-Host "Brain mode set to 'none'. Skipping AgentBrain connection." -ForegroundColor Gray
+    Write-Host "AgentBrain disabled (mode: none)." -ForegroundColor Yellow
 }
 
 # Update README.md
