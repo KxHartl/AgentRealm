@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,twocolumn]{article}
+\documentclass[10pt,a4paper,twocolumn]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[croatian]{babel}
 \usepackage[T1]{fontenc}
@@ -8,9 +8,10 @@
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{caption}
+\usepackage{abstract}
 
 % Postavke margina
-\geometry{left=2cm,right=2cm,top=2.5cm,bottom=2.5cm}
+\geometry{left=1.8cm,right=1.8cm,top=2.0cm,bottom=2.0cm,columnsep=0.7cm}
 
 % Prored 1.0 za radove
 \singlespacing
@@ -19,8 +20,8 @@
 \titleformat{\section}{\normalfont\large\bfseries\uppercase}{}{0pt}{}
 \titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
 
-\title{{{NASLOV_RADA}}}
-\author{{{IME_I_PREZIME}} \\ \small {{EMAIL}}}
+\title{\vspace{-1.5cm}\Large\bfseries\uppercase{{{NASLOV_RADA}}}}
+\author{\normalsize {{IME_I_PREZIME}} \\ \small {{EMAIL}}}
 \date{}
 
 \begin{document}
@@ -28,7 +29,9 @@
 \maketitle
 
 \begin{abstract}
-{{SAZETAK}}
+\noindent {{SAZETAK}}
+\vspace{0.5cm}\\
+\noindent \textbf{Ključne riječi:} {{KLJUCNE_RIJECI}}
 \end{abstract}
 
 \section{UVOD}

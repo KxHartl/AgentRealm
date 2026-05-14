@@ -1,0 +1,467 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\author{}
+\date{}
+
+\begin{document}
+
+SVEUČILIŠTE U ZAGREBU
+
+FAKULTET STROJARSTVA I BRODOGRADNJE
+
+DIPLOMSKI RAD
+
+Ime Prezime
+
+Zagreb, godina.
+
+SVEUČILIŠTE U ZAGREBU
+
+FAKULTET STROJARSTVA I BRODOGRADNJE
+
+DIPLOMSKI RAD
+
+Mentori: Student:
+
+Prof. dr. sc. Ime Prezime, dipl. ing. Ime Prezime
+
+Dr. sc. Ime Prezime, dipl. ing.
+
+Zagreb, godina.
+
+Izjavljujem da sam ovaj rad izradio samostalno koristeći znanja stečena
+tijekom studija i navedenu literaturu.
+
+Zahvaljujem se \ldots.
+
+Ime Prezime
+
+\includegraphics[width=6.23958in,height=9.16667in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image1.jpeg}
+
+\protect\hypertarget{_Toc232930545}{}{}SADRŽAJ
+
+\protect\hyperlink{_Toc232930545}{SADRŽAJ
+\protect\hyperlink{_Toc232930545}{III}}
+
+\protect\hyperlink{_Toc232930546}{POPIS SLIKA
+\protect\hyperlink{_Toc232930546}{III}}
+
+\protect\hyperlink{_Toc232930547}{POPIS TABLICA
+\protect\hyperlink{_Toc232930547}{III}}
+
+\protect\hyperlink{_Toc340560276}{POPIS TEHNIČKE DOKUMENTACIJE
+\protect\hyperlink{_Toc340560276}{III}}
+
+\protect\hyperlink{_Toc232930548}{POPIS OZNAKA
+\protect\hyperlink{_Toc232930548}{III}}
+
+\protect\hyperlink{_Toc232930549}{SAŽETAK
+\protect\hyperlink{_Toc232930549}{III}}
+
+\protect\hyperlink{_Toc340560279}{SUMMARY
+\protect\hyperlink{_Toc340560279}{III}}
+
+\protect\hyperlink{uvod}{1. UVOD \protect\hyperlink{uvod}{3}}
+
+\protect\hyperlink{_Toc340560281}{1.1. Podnaslov uvoda
+\protect\hyperlink{_Toc340560281}{3}}
+
+\protect\hyperlink{_Toc340560282}{1.2. Podnaslov uvoda
+\protect\hyperlink{_Toc340560282}{3}}
+
+\protect\hyperlink{naslov-poglavlja}{2. NASLOV POGLAVLJA
+\protect\hyperlink{naslov-poglavlja}{3}}
+
+\protect\hyperlink{_Toc340560284}{2.1. Podnaslov
+\protect\hyperlink{_Toc340560284}{3}}
+
+\protect\hyperlink{_Toc340560285}{2.2. Podnaslov
+\protect\hyperlink{_Toc340560285}{3}}
+
+\protect\hyperlink{naslov-poglavlja-naslov-poglavlja-naslov-poglavlja-naslov-poglavlja}{3.
+NASLOV POGLAVLJA NASLOV POGLAVLJA NASLOV POGLAVLJA NASLOV POGLAVLJA
+\protect\hyperlink{naslov-poglavlja-naslov-poglavlja-naslov-poglavlja-naslov-poglavlja}{3}}
+
+\protect\hyperlink{_Toc232930569}{3.1. Podnaslov podnaslov podnaslov
+podnaslov podnaslov podnaslov podnaslov podnaslov podnaslov podnaslov
+\protect\hyperlink{_Toc232930569}{3}}
+
+\protect\hyperlink{_Toc340560288}{3.1.1. Podpodnaslov podpodnaslov
+podpodnaslov podpodnaslov podpodnaslov podpodnaslov podpodnaslov
+\protect\hyperlink{_Toc340560288}{3}}
+
+\protect\hyperlink{_Toc340560289}{3.1.1.1. Podpodpodnaslov
+podpodpodnaslov podpodpodnaslov podpodpodnaslov podpodpodnaslov
+\protect\hyperlink{_Toc340560289}{3}}
+
+\protect\hyperlink{upute-za-osvjeux17eavanje-aux17euriranje-popisa-tablica-slika-sadrux17eaja}{4.
+UPUTE ZA OSVJEŽAVANJE (AŽURIRANJE) POPISA TABLICA, SLIKA, SADRŽAJA
+\protect\hyperlink{upute-za-osvjeux17eavanje-aux17euriranje-popisa-tablica-slika-sadrux17eaja}{3}}
+
+\protect\hyperlink{zakljuux10dak}{5. ZAKLJUČAK
+\protect\hyperlink{zakljuux10dak}{3}}
+
+\protect\hyperlink{_Toc232930572}{LITERATURA
+\protect\hyperlink{_Toc232930572}{3}}
+
+\protect\hyperlink{_Toc287445051}{PRILOZI
+\protect\hyperlink{_Toc287445051}{3}}
+
+\protect\hypertarget{_Toc232930546}{}{}POPIS SLIKA
+
+\protect\hyperlink{_Ref287437429}{Slika 1. Kako opisati
+\protect\hyperlink{_Ref287437429}{3}}
+
+\protect\hyperlink{_Ref287438310}{Slika 2. Kako ubaciti referencu slike
+u tekst \protect\hyperlink{_Ref287438310}{3}}
+
+\protect\hyperlink{_Ref287437879}{Slika 3. Kako ubaciti referencu
+tablice u tekst \protect\hyperlink{_Ref287437879}{3}}
+
+\protect\hyperlink{_Toc287599554}{Slika 4. Kako ubaciti referencu
+jednadžbe u tekst \protect\hyperlink{_Toc287599554}{3}}
+
+\protect\hyperlink{_Toc287607535}{Slika 5. Kako osvježiti (ažurirati)
+popise tablica, slika, sadržaja \protect\hyperlink{_Toc287607535}{3}}
+
+\protect\hypertarget{_Toc232930547}{}{}POPIS TABLICA
+
+\protect\hyperlink{_Ref287437985}{Tablica 1. Naziv (kratki opis) tablice
+\protect\hyperlink{_Ref287437985}{3}}
+
+\protect\hypertarget{_Toc340560276}{}{}POPIS TEHNIČKE DOKUMENTACIJE
+
+BROJ CRTEŽA Naziv iz sastavnice
+
+\protect\hypertarget{_Toc232930548}{}{}POPIS OZNAKA
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1543}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1844}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.6613}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+Oznaka
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Jedinica
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Opis
+\end{minipage} \\
+\midrule()
+\endhead
+Oznaka 1 & Jedinica & Opis oznake \\
+Oznaka 2 & Jedinica & Opis oznake \\
+Oznaka 3 & Jedinica & Opis oznake \\
+Oznaka 4 & Jedinica & Opis oznake \\
+& & \\
+& & \\
+& & \\
+\bottomrule()
+\end{longtable}
+
+\protect\hypertarget{_Toc232930549}{}{}SAŽETAK
+
+Tekst sažetka (style: TEKST)
+
+Ključne riječi:
+
+\protect\hypertarget{_Toc340560279}{}{}SUMMARY
+
+Abstract (style: TEKST)
+
+Key words:
+
+\hypertarget{uvod}{%
+\section{UVOD}\label{uvod}}
+
+Tekst uvoda
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\hypertarget{_Toc340560281}{}{}Podnaslov uvoda
+\end{enumerate}
+
+Tekst {[}Slika 1{]}. U potpisu slike razmak između brojke i teksta
+definirati s tipkom "\textbf{Tab"}.
+
+\includegraphics[width=2.90625in,height=2.17708in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image2.png}
+\includegraphics[width=2.76042in,height=2.1875in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image3.png}
+
+\protect\hypertarget{_Ref287437429}{}{}Slika . Kako opisati
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\item
+  \protect\hypertarget{_Toc340560282}{}{}Podnaslov uvoda
+\end{enumerate}
+
+Tekst {[}Slika 2{]}
+
+\includegraphics[width=3.21875in,height=2.4375in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image4.png}
+\includegraphics[width=2.90625in,height=2.76042in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image5.png}
+
+\protect\hypertarget{_Ref287438310}{}{}Slika . Kako ubaciti referencu
+slike u tekst
+
+Tekst vezan uz nabrajanje:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod
+  1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1
+\item
+  Navod 2
+\end{enumerate}
+
+\hypertarget{naslov-poglavlja}{%
+\section{NASLOV POGLAVLJA}\label{naslov-poglavlja}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\hypertarget{_Toc340560284}{}{}Podnaslov
+\end{enumerate}
+
+Tekst
+
+Tekst vezan uz nabrajanje:
+
+\begin{itemize}
+\item
+  Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod
+  1 Navod 1 Navod 1
+\item
+  Navod 2
+\end{itemize}
+
+Tekst {[}Slika 3{]}
+
+\includegraphics[width=3.21875in,height=2.4375in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image4.png}
+\includegraphics[width=2.90625in,height=2.77083in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image6.png}
+
+\protect\hypertarget{_Ref287437879}{}{}Slika . Kako ubaciti referencu
+tablice u tekst
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\hypertarget{_Toc340560285}{}{}Podnaslov
+\end{enumerate}
+
+Tekst {[}Tablica 1{]}. U natpisu tablice razmak između brojke i teksta
+definirati s tipkom "\textbf{Tab"}
+
+\protect\hypertarget{_Ref287437985}{}{}Tablica . Naziv (kratki opis)
+tablice
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} \\
+\midrule()
+\endhead
+& & \\
+& & \\
+\bottomrule()
+\end{longtable}
+
+Tekst vezan uz nabrajanje:
+
+\begin{enumerate}
+\def\labelenumi{\alph{enumi})}
+\item
+  Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1 Navod
+  1 Navod 1 Navod 1 Navod 1 Navod 1 Navod 1
+\item
+  Navod 2
+\end{enumerate}
+
+\hypertarget{naslov-poglavlja-naslov-poglavlja-naslov-poglavlja-naslov-poglavlja}{%
+\section{NASLOV POGLAVLJA NASLOV POGLAVLJA NASLOV POGLAVLJA NASLOV
+POGLAVLJA}\label{naslov-poglavlja-naslov-poglavlja-naslov-poglavlja-naslov-poglavlja}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \protect\hypertarget{_Toc232930569}{}{}Podnaslov podnaslov podnaslov
+  podnaslov podnaslov podnaslov podnaslov podnaslov podnaslov podnaslov
+
+  \begin{enumerate}
+  \def\labelenumii{\arabic{enumii}.}
+  \item
+    \protect\hypertarget{_Toc340560288}{}{}Podpodnaslov podpodnaslov
+    podpodnaslov podpodnaslov podpodnaslov podpodnaslov podpodnaslov
+
+    \begin{enumerate}
+    \def\labelenumiii{\arabic{enumiii}.}
+    \item
+      \protect\hypertarget{_Toc340560289}{}{}Podpodpodnaslov
+      podpodpodnaslov podpodpodnaslov podpodpodnaslov podpodpodnaslov
+    \end{enumerate}
+  \end{enumerate}
+\end{enumerate}
+
+Tekst vezan uz jednadžbu (1)
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1250}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image7.wmf}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+()
+\end{minipage} \\
+\midrule()
+\endhead
+\bottomrule()
+\end{longtable}
+
+Za svaku novu jednadžbu kopirati prethodnu tablicu. Nakon toga označiti
+cijeli tekst (Select All) i osvježiti ažurirati tablice (Update Field).
+
+\includegraphics[width=3.21875in,height=2.4375in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image4.png}
+\includegraphics[width=2.91667in,height=2.76042in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image8.png}
+
+\protect\hypertarget{_Toc287599554}{}{}Slika . Kako ubaciti referencu
+jednadžbe u tekst
+
+Tekst vezan uz jednadžbu (2)
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.0500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.8250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1250}}@{}}
+\toprule()
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\includegraphics{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image9.wmf}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+()
+\end{minipage} \\
+\midrule()
+\endhead
+\bottomrule()
+\end{longtable}
+
+\hypertarget{upute-za-osvjeux17eavanje-aux17euriranje-popisa-tablica-slika-sadrux17eaja}{%
+\section{UPUTE ZA OSVJEŽAVANJE (AŽURIRANJE) POPISA TABLICA, SLIKA,
+SADRŽAJA}\label{upute-za-osvjeux17eavanje-aux17euriranje-popisa-tablica-slika-sadrux17eaja}}
+
+Označiti cijeli tekst (Select All) i osvježiti (ažurirati) popise
+(Update Field).
+
+\includegraphics[width=1.33333in,height=1.66667in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image10.png}
+\includegraphics[width=3.10417in,height=1.67708in]{vertopal_f663f26f26a24255b3490e35487d1b0f/media/image11.png}
+
+\protect\hypertarget{_Toc287607535}{}{}Slika . Kako osvježiti
+(ažurirati) popise tablica, slika, sadržaja
+
+\hypertarget{zakljuux10dak}{%
+\section{ZAKLJUČAK}\label{zakljuux10dak}}
+
+Tekst zaključka
+
+\protect\hypertarget{_Toc232930572}{}{}LITERATURA
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Kraut, B.: Strojarski priručnik, Tehnička knjiga Zagreb, 1970.
+\item
+  Decker, K. H.: Elementi strojeva, Tehnička knjiga Zagreb, 1975.
+\item
+  Herold, Z.: Računalna i inženjerska grafika, Zagreb, 2003.
+\end{enumerate}
+
+\protect\hypertarget{_Toc287445051}{}{}PRILOZI
+
+\begin{enumerate}
+\def\labelenumi{\Roman{enumi}.}
+\item
+  CD-R disc
+\item
+  Tehnička dokumentacija
+\end{enumerate}
+
+\end{document}
