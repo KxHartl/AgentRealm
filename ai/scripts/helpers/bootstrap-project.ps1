@@ -2,19 +2,25 @@ param (
     [string]$name,
     [string]$ide = "vscode",
     [ValidateSet("none", "cloud", "local")]
-    [string]$rag = "none"
+    [string]$rag = "none",
+    [ValidateSet("none", "global", "local")]
+    [string]$brain = "global",
+    [string]$brainRepo = "https://github.com/KxHartl/AgentBrain.git"
 )
 
 function Show-Usage {
-    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>]"
+    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <path>]"
+    Write-Host ""
+    Write-Host "Options:"
+    Write-Host "  -name    Project name (required)."
+    Write-Host "  -ide     IDE to use (vscode|antigravity). Default: vscode."
+    Write-Host "  -rag     RAG mode (none|cloud|local). Default: none."
+    Write-Host "  -brain   Brain mode (none|global|local). Default: global."
     Write-Host ""
     Write-Host "RAG Modes:"
-    Write-Host "  none   (default) No RAG. Zero Python overhead."
-    Write-Host "  cloud  Gemini API embeddings. ~200 MB footprint. Requires GOOGLE_API_KEY."
-    Write-Host "  local  Local sentence-transformers model. ~1.2 GB footprint. Works offline."
-    Write-Host ""
-    Write-Host "Global Brain:"
-    Write-Host "  This project automatically connects to ~/.agentbrain as the SSOT."
+    Write-Host "  none   Zero Python overhead."
+    Write-Host "  cloud  Gemini API embeddings (~200 MB). Requires GOOGLE_API_KEY."
+    Write-Host "  local  Local models (~1.2 GB). Offline capable."
 }
 
 if (-not $name) {
@@ -86,25 +92,54 @@ if (Test-Path ai/scripts/git/setup-guardrails.ps1) {
 }
 
 # 3. Resolve and Verify Global Brain
-$homeDir = [System.Environment]::GetFolderPath("UserProfile")
-$brainPath = "$homeDir\.agentbrain"
+$brainPath = ""
+if ($brain -eq "global") {
+    $homeDir = [System.Environment]::GetFolderPath("UserProfile")
+    $brainPath = "$homeDir\.agentbrain"
+    
+    if (-not (Test-Path $brainPath)) {
+        Write-Host "Global AgentBrain not found at $brainPath. Attempting to clone from $brainRepo..." -ForegroundColor Cyan
+        git clone $brainRepo $brainPath
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Warning: Failed to clone AgentBrain. Creating empty directory." -ForegroundColor Yellow
+            New-Item -ItemType Directory -Path $brainPath -Force | Out-Null
+        }
+    }
+} elseif ($brain -eq "local") {
+    $brainPath = "$(Get-Location)\ai\brain"
+    if (-not (Test-Path $brainPath)) {
+        New-Item -ItemType Directory -Path $brainPath -Force | Out-Null
+    }
+}
 
-Write-Host "Connecting to Global AgentBrain at $brainPath..." -ForegroundColor Cyan
-if (Test-Path $brainPath) {
+if ($brain -ne "none") {
+    Write-Host "Connecting to AgentBrain ($brain) at $brainPath..." -ForegroundColor Cyan
+    # Update .env
+    $envPath = ".env"
+    if (Test-Path $envPath) {
+        $content = Get-Content $envPath
+        if ($content -match "GLOBAL_BRAIN_PATH=") {
+            $content = $content -replace "GLOBAL_BRAIN_PATH=.*", "GLOBAL_BRAIN_PATH=$brainPath"
+        } else {
+            $content += "GLOBAL_BRAIN_PATH=$brainPath"
+        }
+        $content | Set-Content $envPath
+    }
+
     if (Test-Path "$brainPath\.git") {
         Write-Host "Brain is a git repo. Pulling latest skills..." -ForegroundColor Cyan
         pushd $brainPath
         git pull origin main
         popd
     }
-    # Sync and Cache Global Brain locally
+    
     if (Test-Path ai/scripts/agents/sync-brain.ps1) {
-        Write-Host "Syncing Global Brain to local cache..." -ForegroundColor Cyan
+        Write-Host "Syncing Brain to local cache..." -ForegroundColor Cyan
         .\ai/scripts/agents/sync-brain.ps1
     }
-    Write-Host "Global Brain connected and cached in ai/brain." -ForegroundColor Green
+    Write-Host "AgentBrain connected and cached." -ForegroundColor Green
 } else {
-    Write-Host "Warning: Global Brain not found at $brainPath. RAG will only use local project data." -ForegroundColor Yellow
+    Write-Host "AgentBrain disabled (mode: none)." -ForegroundColor Yellow
 }
 
 # Update README.md
