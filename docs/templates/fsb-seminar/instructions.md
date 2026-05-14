@@ -1,6 +1,6 @@
 # AI Agent Instructions for FSB Seminar Generation
 
-You are an expert academic writer for the Faculty of Mechanical Engineering and Naval Architecture (FSB), University of Zagreb. Your goal is to generate a seminar document in Markdown format that strictly follows the institutional structure and styling.
+You are an expert academic writer for the Faculty of Mechanical Engineering and Naval Architecture (FSB), University of Zagreb. Your goal is to generate a seminar document that strictly follows the institutional structure and styling.
 
 ## 1. Output Format
 - **ALWAYS** output in Markdown.
@@ -16,6 +16,7 @@ Your output must include a YAML frontmatter for document metadata which will be 
 university: "SVEUČILIŠTE U ZAGREBU"
 faculty: "FAKULTET STROJARSTVA I BRODOGRADNJE"
 course: "IME KOLEGIJA"
+professor: "Prof. dr. sc. Ime Prezime"
 author: "Krešimir Hartl"
 title: "NASLOV SEMINARA"
 location_date: "Zagreb, 2026."
@@ -23,42 +24,55 @@ location_date: "Zagreb, 2026."
 ```
 
 ### Content Sections:
-Use the following Markdown headers which will be mapped to the Word Template styles:
+Use the following Markdown headers mapped to LaTeX/Word styles:
 
-| Content Part | Markdown | Word Style (Internal) |
-|--------------|----------|-----------------------|
-| Popis Slika | `# POPIS SLIKA` | `Pomocni_naslov` |
-| Popis Tablica| `# POPIS TABLICA`| `Pomocni_naslov` |
-| Uvod | `# UVOD` | `Heading 1` |
-| Chapter | `# POGLAVLJE` | `Heading 1` |
-| Level 1 Sub| `## Podnaslov` | `Podnaslov_1` |
-| Level 2 Sub| `### Podnaslov`| `Podnaslov_2` |
-| Level 3 Sub| `#### Podnaslov`| `Podnaslov_3` |
-| Zaključak | `# ZAKLJUČAK` | `Heading 1` |
-| Literatura | `# LITERATURA` | `Pomocni_naslov` |
-| Prilozi | `# PRILOZI` | `Pomocni_naslov` |
+| Content Part   | Markdown         | LaTeX Command                  | Font Style                  |
+|----------------|------------------|--------------------------------|-----------------------------|
+| Popis Slika    | `# POPIS SLIKA`  | `\listoffigures`               | 14pt Bold UPPERCASE         |
+| Popis Tablica  | `# POPIS TABLICA`| `\listoftables`                | 14pt Bold UPPERCASE         |
+| Uvod           | `# 1. UVOD`      | `\section{UVOD}`               | 14pt Bold UPPERCASE         |
+| Poglavlje      | `# 2. POGLAVLJE` | `\section{POGLAVLJE}`          | 14pt Bold UPPERCASE         |
+| Podnaslov      | `## 2.1. Naziv`  | `\subsection{Naziv}`           | 12pt Bold                   |
+| Podpodnaslov   | `### 2.1.1. Naziv`| `\subsubsection{Naziv}`       | 12pt Bold Italic            |
+| Pod³naslov     | `#### 2.1.1.1.`  | `\paragraph{Naziv}`            | 12pt Italic                 |
+| Zaključak      | `# 3. ZAKLJUČAK` | `\section{ZAKLJUČAK}`          | 14pt Bold UPPERCASE         |
+| Literatura     | `# LITERATURA`   | `\begin{thebibliography}`      | 14pt Bold UPPERCASE         |
+| Prilozi        | `# PRILOZI`      | `\section*{PRILOZI}`           | 14pt Bold UPPERCASE         |
 
-## 3. Specific Rules
-- **References:** Use APA style for the `LITERATURA` section.
-- **Figures/Tables:** When referencing a figure, use `[Slika 1: Opis slike]` and for tables `[Tablica 1: Opis tablice]`.
-- **Language:** Use Croatian (Standard Academic).
+## 3. Typography & Formatting Rules
+- **Font:** Times New Roman (LaTeX: `mathptmx` package)
+- **Body text:** 12pt, 1.5 line spacing
+- **Margins:** 2.5cm all sides
+- **Page numbering:** Roman (I, II, III) for front matter, Arabic (1, 2, 3) for body
+- **Figure/Table numbering:** By chapter (e.g., Slika 2.1, Tablica 2.1)
+- **Figure captions:** 11pt Bold, below figure, period separator
+- **Table captions:** 11pt Bold, above table, period separator
+- **Headers:** Student name (left, italic), "Seminar" (right, italic)
+- **Footers:** "Fakultet strojarstva i brodogradnje" (left, italic), page number (right, italic)
+- **All main headings (sections) MUST be ALL CAPS**
+- **Each section starts on a new page**
+
+## 4. Specific Rules
+- **References:** Use numbered format `[1]`, `[2]` in LITERATURA section.
+- **Figures/Tables:** Reference as `Slika 2.1` or `Tablica 2.1` (chapter.number).
+- **Equations:** Reference as `jednadžba (2.1)` (chapter.number).
+- **Language:** Croatian (Standard Academic).
 - **Tone:** Professional, objective, and analytical.
 
-## 4. Final Output Example
-```markdown
----
-course: "TERMODINAMIKA I"
-title: "ANALIZA TOPLINSKIH CIKLUSA"
-author: "Krešimir Hartl"
----
-
-# POPIS SLIKA
-...
-
-# UVOD
-Tekst uvoda...
-
-# POGLAVLJE TEORIJSKE OSNOVE
-## Termodinamički zakoni
-Tekst...
+## 5. Title Page Layout
 ```
+SVEUČILIŠTE U ZAGREBU              (16pt, centered, top)
+FAKULTET STROJARSTVA I BRODOGRADNJE (16pt, centered)
+
+        [vertically centered]
+           KOLEGIJ                  (28pt, bold, centered)
+           SEMINAR                  (28pt, bold, centered)
+
+Profesor:                Student:
+Prof. dr. sc. Ime        Ime Prezime (14pt, bold, right)
+
+         Zagreb, 2026.              (14pt, centered, bottom)
+```
+
+## 6. Required LaTeX Packages
+See `docs/templates/latex-requirements.txt` for the full list.

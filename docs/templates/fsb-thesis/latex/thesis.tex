@@ -13,85 +13,150 @@
 \usepackage{tabularx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{mathptmx}       % Times New Roman font
+\usepackage{chngcntr}       % Za numeriranje po poglavljima
 
-% Postavke margina
-\geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+% Postavke margina (matching Word: left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm)
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
 
 % Prored 1.5
 \onehalfspacing
 
-% Naslovi
-\titleformat{\section}{\normalfont\Large\bfseries\uppercase}{\thesection.}{1em}{}
-\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection.}{1em}{}
-\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection.}{1em}{}
+% ---- STILOVI NASLOVA ----
+% Section: nova stranica + bold uppercase
+\titleformat{\section}
+  {\normalfont\large\bfseries\uppercase}{\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\itshape}{\thesubsubsection.}{0.5em}{}
+\titleformat{\paragraph}[hang]
+  {\normalfont\normalsize\itshape}{\theparagraph.}{0.5em}{}
+\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{0.5em}
 
-% Nazivi automatskih popisa
-\renewcommand{\contentsname}{SADRŽAJ}
-\renewcommand{\listfigurename}{POPIS SLIKA}
-\renewcommand{\listtablename}{POPIS TABLICA}
-\renewcommand{\refname}{LITERATURA}
+% Svaki \section počinje na novoj stranici
+\newcommand{\sectionbreak}{\clearpage}
+
+% ---- NUMERIRANJE SLIKA, TABLICA I JEDNADŽBI PO POGLAVLJIMA ----
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+\counterwithin{equation}{section}
+
+% ---- RIMSKI BROJEVI VELIKIM SLOVIMA ----
+\renewcommand{\thepage}{\ifnum\value{page}>0\arabic{page}\else\Roman{page}\fi}
+% Koristimo \pagenumbering{Roman} umjesto \pagenumbering{roman}
+
+% Dubina numeriranja (do 4 razine)
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+% ---- NAZIVI AUTOMATSKIH POPISA (addto jer babel croatian overrida renewcommand) ----
+\addto\captionscroatian{%
+  \renewcommand{\contentsname}{SADRŽAJ}%
+  \renewcommand{\listfigurename}{POPIS SLIKA}%
+  \renewcommand{\listtablename}{POPIS TABLICA}%
+  \renewcommand{\refname}{LITERATURA}%
+}
+
+% ---- POTPISI SLIKA I TABLICA ----
+% Captions: 11pt Bold (matching PDF: "11.0pt TimesNewRomanPS-BoldMT")
+\captionsetup[figure]{font={small,bf},labelsep=period}
+\captionsetup[table]{font={small,bf},labelsep=period,position=above}
+
+% ---- ZAGLAVLJE I PODNOŽJE ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{{{IME_I_PREZIME}}}}
+\fancyhead[R]{\small\textit{Diplomski rad}}
+\fancyfoot[L]{\small\textit{Fakultet strojarstva i brodogradnje}}
+\fancyfoot[R]{\small\textit{\thepage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
 
 \begin{document}
 
-% --- NASLOVNICA ---
-\begin{titlepage}
-    \centering
-    {\large SVEUČILIŠTE U ZAGREBU\\}
-    {\large FAKULTET STROJARSTVA I BRODOGRADNJE\\}
-    \vspace{2.5cm}
-    {\Large DIPLOMSKI RAD\\}
-    \vspace{1.5cm}
-    {\Huge \textbf{{{NASLOV_RADA}}}\\}
-    \vspace{1.5cm}
-    {\large {{IME_I_PREZIME}}\\}
-    \vfill
-    {\large Zagreb, {{GODINA}}.}
-\end{titlepage}
-
-% --- UNUTARNJA NASLOVNICA, IZJAVA I ZAHVALA ---
+% =====================================================================
+% NASLOVNICA (Stranica 1)
+% =====================================================================
 \begin{titlepage}
     \thispagestyle{empty}
     \centering
-    {\large SVEUČILIŠTE U ZAGREBU\\}
-    {\large FAKULTET STROJARSTVA I BRODOGRADNJE\\}
-    \vspace{2.5cm}
-    {\Large DIPLOMSKI RAD\\}
-    \vspace{1.25cm}
-    {\Large \textbf{{{NASLOV_RADA}}}\\}
-    \vspace{1.5cm}
-    
-    \begin{minipage}[t]{0.45\textwidth}
-        \begin{flushleft}
-            \large Mentori:\\
-            {{MENTORI}}
-        \end{flushleft}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.45\textwidth}
-        \begin{flushright}
-            \large Student:\\
-            {{IME_I_PREZIME}}
-        \end{flushright}
-    \end{minipage}
-
+    {\fontsize{16pt}{19pt}\selectfont SVEUČILIŠTE U ZAGREBU\\}
+    {\fontsize{16pt}{19pt}\selectfont FAKULTET STROJARSTVA I BRODOGRADNJE\\}
     \vfill
-    \begin{minipage}{0.9\textwidth}
-    \noindent Izjavljujem da sam ovaj rad izradio samostalno koristeći znanja stečena tijekom studija i navedenu literaturu.
-    \end{minipage}
-
-    \vspace{1.5cm}
-
-    \begin{minipage}{0.9\textwidth}
-    \noindent Zahvaljujem se {{ZAHVALA_TEKST}}
-    \end{minipage}
-
-    \vspace{2cm}
-    {\large {{IME_I_PREZIME}}}
+    {\fontsize{28pt}{34pt}\selectfont\bfseries DIPLOMSKI RAD\\}
+    \vfill
+    \begin{flushright}
+        {\fontsize{14pt}{17pt}\selectfont\bfseries {{IME_I_PREZIME}}\\}
+    \end{flushright}
+    \vspace{1cm}
+    {\fontsize{14pt}{17pt}\selectfont Zagreb, {{GODINA}}.}
 \end{titlepage}
 
-\pagenumbering{roman}
+% =====================================================================
+% UNUTARNJA NASLOVNICA (Stranica 2)
+% =====================================================================
+\begin{titlepage}
+    \thispagestyle{empty}
+    \centering
+    {\fontsize{16pt}{19pt}\selectfont SVEUČILIŠTE U ZAGREBU\\}
+    {\fontsize{16pt}{19pt}\selectfont FAKULTET STROJARSTVA I BRODOGRADNJE\\}
+    \vfill
+    {\fontsize{28pt}{34pt}\selectfont\bfseries DIPLOMSKI RAD\\}
+    \vfill
+    \noindent
+    \begin{minipage}[t]{0.48\textwidth}
+        \raggedright
+        {\fontsize{14pt}{17pt}\selectfont Mentori:\\}
+        {\fontsize{14pt}{17pt}\selectfont {{MENTORI}}\\}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \raggedleft
+        {\fontsize{14pt}{17pt}\selectfont Student:\\}
+        {\fontsize{14pt}{17pt}\selectfont {{IME_I_PREZIME}}\\}
+    \end{minipage}
+    \vspace{1cm}
+    \begin{center}
+        {\fontsize{14pt}{17pt}\selectfont Zagreb, {{GODINA}}.}
+    \end{center}
+\end{titlepage}
 
-% --- SADRŽAJ I POPISI ---
+% =====================================================================
+% IZJAVA I ZAHVALA (Stranica 3)
+% =====================================================================
+\newpage
+\thispagestyle{empty}
+\vspace*{8cm}
+\noindent Izjavljujem da sam ovaj rad izradio samostalno koristeći znanja stečena tijekom studija i navedenu literaturu.
+
+\vspace{1cm}
+\noindent Zahvaljujem se {{ZAHVALA_TEKST}}
+
+\vspace{2cm}
+\begin{flushright}
+    {{IME_I_PREZIME}}
+\end{flushright}
+
+% =====================================================================
+% ZADATAK (Stranica 4) - slika zadatka
+% =====================================================================
+\newpage
+\thispagestyle{empty}
+% Ovdje umetnuti skeniranu sliku zadatka:
+% \includegraphics[width=\textwidth]{zadatak.pdf}
+\vspace*{\fill}
+\begin{center}
+    \textit{[Ovdje umetnuti skeniranu sliku zadatka]}
+\end{center}
+\vspace*{\fill}
+
+% =====================================================================
+% SADRŽAJ I POPISI (rimske stranice)
+% =====================================================================
+\newpage
+\pagenumbering{Roman}
+
 \tableofcontents
 \newpage
 \listoffigures
@@ -109,7 +174,7 @@
 \newpage
 \section*{POPIS OZNAKA}
 \addcontentsline{toc}{section}{POPIS OZNAKA}
-\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.2\textwidth}X}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}p{0.18\textwidth}X}
 \textbf{Oznaka} & \textbf{Jedinica} & \textbf{Opis} \\
 {{POPIS_OZNAKA}} & & \\
 \end{tabularx}
@@ -130,21 +195,30 @@
 \vspace{0.75cm}
 \noindent \textbf{Key words:} {{KEY_WORDS}}
 
+% =====================================================================
+% SADRŽAJ RADA (arapske stranice)
+% =====================================================================
 \newpage
 \pagenumbering{arabic}
+\setcounter{page}{1}
 
-% --- SADRŽAJ RADA ---
 {{GENERIRANI_SADRZAJ}}
 
-% --- LITERATURA ---
+% =====================================================================
+% LITERATURA
+% =====================================================================
 \newpage
 \begin{thebibliography}{99}
+\addcontentsline{toc}{section}{LITERATURA}
 {{LITERATURA}}
 \end{thebibliography}
 
-% --- PRILOZI ---
-\appendix
-\section{PRILOZI}
+% =====================================================================
+% PRILOZI
+% =====================================================================
+\newpage
+\section*{PRILOZI}
+\addcontentsline{toc}{section}{PRILOZI}
 {{PRILOZI}}
 
 \end{document}
