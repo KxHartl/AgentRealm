@@ -2,6 +2,7 @@
 university: "SVEUČILIŠTE U ZAGREBU"
 faculty: "FAKULTET STROJARSTVA I BRODOGRADNJE"
 course: "{{KOLEGIJ}}"
+professor: "{{PROFESOR}}"
 author: "{{IME_I_PREZIME}}"
 title: "{{NASLOV_SEMINARA}}"
 location_date: "Zagreb, {{GODINA}}."
@@ -15,7 +16,7 @@ location_date: "Zagreb, {{GODINA}}."
 
 {{UVODNI_TEKST}}
 
-# POGLAVLJE {{NAZIV_PRVOG_POGLAVLJA}}
+# POGLAVLJE {{NAZIV_POGLAVLJA}}
 
 ## {{PODNASLOV_1}}
 
@@ -25,14 +26,18 @@ location_date: "Zagreb, {{GODINA}}."
 
 {{TEKST_2}}
 
+#### {{POD_POD_PODNASLOV}}
+
+{{TEKST_3}}
+
 # ZAKLJUČAK
 
 {{ZAKLJUCAK_TEKST}}
 
 # LITERATURA
 
-1. Prezimne, I. (Godina). Naslov knjige. Izdavač.
-2. ...
+[1] Prezime, I.: Naslov knjige, Izdavač, Godina.
+[2] ...
 
 # PRILOZI
 
