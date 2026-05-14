@@ -4,17 +4,23 @@ set -euo pipefail
 project_name=""
 ide="vscode"
 rag="none"
+brain_mode="global"
+brain_repo="https://github.com/KxHartl/AgentBrain.git"
 
 usage() {
-  echo "Usage: $0 --name <project-name> [--ide <vscode|antigravity>] [--rag <none|cloud|local>]"
+  echo "Usage: $0 --name <project-name> [--ide <vscode|antigravity>] [--rag <none|cloud|local>] [--brain <none|global|local>] [--brain-repo <url>]"
+  echo ""
+  echo "Options:"
+  echo "  --name        Project name (required)."
+  echo "  --ide         IDE to use (vscode|antigravity). Default: vscode."
+  echo "  --rag         RAG mode (none|cloud|local). Default: none."
+  echo "  --brain       Brain mode (none|global|local). Default: global."
+  echo "  --brain-repo  Source URL for AgentBrain clone. Default: KxHartl/AgentBrain."
   echo ""
   echo "RAG Modes:"
-  echo "  none   (default) No RAG. Zero Python overhead."
-  echo "  cloud  Gemini API embeddings. ~200 MB footprint. Requires GOOGLE_API_KEY."
-  echo "  local  Local sentence-transformers model. ~1.2 GB footprint. Works offline."
-  echo ""
-  echo "Global Brain:"
-  echo "  This project automatically connects to ~/.agentbrain as the SSOT."
+  echo "  none     Zero Python overhead."
+  echo "  cloud    Gemini API embeddings (~200 MB). Requires GOOGLE_API_KEY."
+  echo "  local    Local models (~1.2 GB). Offline capable."
 }
 
 while [[ $# -gt 0 ]]; do
@@ -29,6 +35,14 @@ while [[ $# -gt 0 ]]; do
       ;;
     --rag)
       rag="$2"
+      shift 2
+      ;;
+    --brain)
+      brain_mode="$2"
+      shift 2
+      ;;
+    --brain-repo)
+      brain_repo="$2"
       shift 2
       ;;
     *)
@@ -88,17 +102,45 @@ if [[ ! -f .env ]]; then
 fi
 
 # 3. Resolve and Verify Global Brain
-brain_path="${HOME}/.agentbrain"
+brain_path=""
+if [[ "$brain_mode" == "global" ]]; then
+  brain_path="${HOME}/.agentrealm"
+  if [[ ! -d "$brain_path" ]]; then
+    echo "Global AgentBrain not found at ${brain_path}. Attempting to clone from ${brain_repo}..."
+    git clone "$brain_repo" "$brain_path" || {
+      echo "Warning: Failed to clone AgentBrain. Creating empty directory."
+      mkdir -p "$brain_path"
+    }
+  fi
+elif [[ "$brain_mode" == "local" ]]; then
+  brain_path="$(pwd)/ai/brain"
+  mkdir -p "$brain_path"
+fi
 
-echo "Connecting to Global AgentBrain at ${brain_path}..."
-if [[ -d "$brain_path" ]]; then
+if [[ "$brain_mode" != "none" ]]; then
+  echo "Connecting to AgentBrain ($brain_mode) at ${brain_path}..."
+  
+  # Update .env
+  if [[ -f .env ]]; then
+    if grep -q "GLOBAL_BRAIN_PATH=" .env; then
+      sed -i "s|GLOBAL_BRAIN_PATH=.*|GLOBAL_BRAIN_PATH=${brain_path}|" .env
+    else
+      echo "GLOBAL_BRAIN_PATH=${brain_path}" >> .env
+    fi
+  fi
+
   if [[ -d "${brain_path}/.git" ]]; then
     echo "Brain is a git repo. Pulling latest skills..."
     cd "$brain_path" && git pull origin main && cd - > /dev/null
   fi
-  echo "Global Brain connected."
+  
+  if [[ -f ai/scripts/agents/sync-brain.sh ]]; then
+    echo "Syncing Brain to local cache..."
+    bash ai/scripts/agents/sync-brain.sh
+  fi
+  echo "AgentBrain connected and cached."
 else
-  echo "Warning: Global Brain not found at ${brain_path}. RAG will only use local project data."
+  echo "AgentBrain disabled (mode: none)."
 fi
 
 # Update README.md

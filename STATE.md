@@ -26,6 +26,7 @@
 
 ## Changelog
 
+- 2026-05-14: **Documentation Overhaul** — Complete rewrite of README.md and creation of detailed instructions.md for improved onboarding and workflow clarity.
 - 2026-05-11: **V2 Refactor** — Clean Root architecture, CRAG pipeline, data/rag + data/process separation.
 - 2026-05-07: Standardized PR workflow with a new GitHub PR template.
 - 2026-05-07: Added automated Python Virtual Environment setup to bootstrap script.
