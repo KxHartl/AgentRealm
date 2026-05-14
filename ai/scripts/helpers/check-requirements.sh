@@ -25,10 +25,6 @@ if [[ "${1:-}" == "--install" ]]; then
   install_flag=true
 fi
 
-while IFS='|' read -r scope name command required min_version install_hint notes; do
-  [[ -z "${scope// }" ]] && continue
-  [[ "$scope" == \#* ]] && continue
-
 # Function to check if a command or package is available
 check_requirement() {
   local scope="$1"
