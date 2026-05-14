@@ -16,11 +16,6 @@ usage() {
   echo "  --rag         RAG mode (none|cloud|local). Default: none."
   echo "  --brain       Brain mode (none|global|local). Default: global."
   echo "  --brain-repo  Source URL for AgentBrain clone. Default: KxHartl/AgentBrain."
-  echo ""
-  echo "RAG Modes:"
-  echo "  none     Zero Python overhead."
-  echo "  cloud    Gemini API embeddings (~200 MB). Requires GOOGLE_API_KEY."
-  echo "  local    Local models (~1.2 GB). Offline capable."
 }
 
 while [[ $# -gt 0 ]]; do
@@ -62,6 +57,7 @@ echo "Updating project metadata..."
 sed -i "s/^name: .*/name: \"${project_name}\"/" ai/config/project.yaml
 sed -i "s/^default_ide: .*/default_ide: \"${ide}\" # vscode | antigravity/" ai/config/project.yaml
 sed -i "s/^rag_mode: .*/rag_mode: \"${rag}\" # none | cloud | local/" ai/config/project.yaml
+sed -i "s/^brain_mode: .*/brain_mode: \"${brain_mode}\" # none | global | local/" ai/config/project.yaml
 
 curr_date=$(date +%Y-%m-%d)
 cat <<EOF > STATE.md
@@ -82,7 +78,7 @@ cat <<EOF > STATE.md
 ## Current focus
 - project-init
 
-- **AgentRealm V2.4**: Integrated Global AgentBrain (~/.agentbrain).
+- **AgentRealm V3.0**: Integrated Global AgentBrain ($brain_mode mode).
 
 ## Backlog
 
@@ -92,7 +88,7 @@ cat <<EOF > STATE.md
 
 ## Changelog
 
-- ${curr_date}: **Project Initialized** — V2.4 Architecture with Global AgentBrain.
+- ${curr_date}: **Project Initialized** — V3.0 Architecture with $brain_mode AgentBrain.
 EOF
 
 # 2. Setup .env from .env.example
@@ -101,10 +97,16 @@ if [[ ! -f .env ]]; then
   cp .env.example .env
 fi
 
-# 3. Resolve and Verify Global Brain
+# 3. Resolve and Verify Brain
 brain_path=""
 if [[ "$brain_mode" == "global" ]]; then
+  # V3.0 Standard: .agentrealm for global brain
   brain_path="${HOME}/.agentrealm"
+  # Special check for user's specific Windows path if in MINGW
+  if [[ -d "/c/Users/KHartl/.agentrealm" ]]; then
+    brain_path="/c/Users/KHartl/.agentrealm"
+  fi
+
   if [[ ! -d "$brain_path" ]]; then
     echo "Global AgentBrain not found at ${brain_path}. Attempting to clone from ${brain_repo}..."
     git clone "$brain_repo" "$brain_path" || {
@@ -156,26 +158,43 @@ echo "Verifying project requirements..."
 bash ./ai/scripts/helpers/check-requirements.sh || echo "Warning: Some requirements are missing."
 
 # 5. Setup Python & install RAG deps
-if command -v python3 >/dev/null 2>&1; then
+get_python() {
+  if command -v python >/dev/null 2>&1 && python -c "import sys" >/dev/null 2>&1; then
+    echo "python"
+  elif command -v python3 >/dev/null 2>&1 && python3 -c "import sys" >/dev/null 2>&1; then
+    echo "python3"
+  else
+    echo ""
+  fi
+}
+
+PY_CMD=$(get_python)
+if [[ -n "$PY_CMD" ]]; then
   if [[ ! -d ".venv" ]]; then
-    python3 -m venv .venv
+    $PY_CMD -m venv .venv
     echo "Virtual environment created."
   fi
 
+  # Determine correct path to pip
+  PIP_CMD=".venv/bin/pip"
+  [[ -f ".venv/Scripts/pip.exe" ]] && PIP_CMD=".venv/Scripts/pip.exe"
+
   # Install base requirements
-  .venv/bin/pip install -r requirements.txt 2>/dev/null || true
+  $PIP_CMD install -r requirements.txt 2>/dev/null || true
 
   if [[ "$rag" == "cloud" ]]; then
     echo "Installing RAG Cloud dependencies..."
-    .venv/bin/pip install -r ai/config/requirements-rag-cloud.txt
+    $PIP_CMD install -r ai/config/requirements-rag-cloud.txt
   elif [[ "$rag" == "local" ]]; then
     echo "Installing RAG Local dependencies..."
-    .venv/bin/pip install -r ai/config/requirements-rag-local.txt
+    $PIP_CMD install -r ai/config/requirements-rag-local.txt
   fi
+else
+  echo "Warning: Python not found or invalid (Microsoft Store stub?). Skipping venv setup."
 fi
 
 echo ""
-echo "Project bootstrapped (V2.4)."
+echo "Project bootstrapped (V3.0)."
 echo "  Name:  $project_name"
 echo "  Brain: $brain_path"
 echo "  RAG:   $rag"

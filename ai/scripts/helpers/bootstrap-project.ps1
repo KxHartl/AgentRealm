@@ -9,18 +9,14 @@ param (
 )
 
 function Show-Usage {
-    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <path>]"
+    Write-Host "Usage: .\ai\scripts\helpers\bootstrap-project.ps1 -name <project-name> [-ide <vscode|antigravity>] [-rag <none|cloud|local>] [-brain <none|global|local>] [-brainRepo <url>]"
     Write-Host ""
     Write-Host "Options:"
-    Write-Host "  -name    Project name (required)."
-    Write-Host "  -ide     IDE to use (vscode|antigravity). Default: vscode."
-    Write-Host "  -rag     RAG mode (none|cloud|local). Default: none."
-    Write-Host "  -brain   Brain mode (none|global|local). Default: global."
-    Write-Host ""
-    Write-Host "RAG Modes:"
-    Write-Host "  none   Zero Python overhead."
-    Write-Host "  cloud  Gemini API embeddings (~200 MB). Requires GOOGLE_API_KEY."
-    Write-Host "  local  Local models (~1.2 GB). Offline capable."
+    Write-Host "  -name      Project name (required)."
+    Write-Host "  -ide       IDE to use (vscode|antigravity). Default: vscode."
+    Write-Host "  -rag       RAG mode (none|cloud|local). Default: none."
+    Write-Host "  -brain     Brain mode (none|global|local). Default: global."
+    Write-Host "  -brainRepo Source URL for AgentBrain clone."
 }
 
 if (-not $name) {
@@ -35,6 +31,7 @@ Write-Host "Updating project metadata..." -ForegroundColor Cyan
 (Get-Content ai/config/project.yaml) -replace '^name: .*', "name: `"$name`"" | Set-Content ai/config/project.yaml
 (Get-Content ai/config/project.yaml) -replace '^default_ide: .*', "default_ide: `"$ide`" # vscode | antigravity" | Set-Content ai/config/project.yaml
 (Get-Content ai/config/project.yaml) -replace '^rag_mode: .*', "rag_mode: `"$rag`" # none | cloud | local" | Set-Content ai/config/project.yaml
+(Get-Content ai/config/project.yaml) -replace '^brain_mode: .*', "brain_mode: `"$brain`" # none | global | local" | Set-Content ai/config/project.yaml
 
 $date = Get-Date -Format "yyyy-MM-dd"
 $cleanState = @"
@@ -55,7 +52,7 @@ $cleanState = @"
 ## Current focus
 - project-init
 
-- **AgentRealm V2.4**: Integrated Global AgentBrain (~/.agentbrain).
+- **AgentRealm V3.0**: Integrated Global AgentBrain ($brain mode).
 
 ## Backlog
 
@@ -65,7 +62,7 @@ $cleanState = @"
 
 ## Changelog
 
-- $date: **Project Initialized** — V2.4 Architecture with Global AgentBrain.
+- $date: **Project Initialized** — V3.0 Architecture with $brain AgentBrain.
 "@
 $cleanState | Set-Content STATE.md
 
@@ -91,11 +88,12 @@ if (Test-Path ai/scripts/git/setup-guardrails.ps1) {
     .\ai/scripts/git/setup-guardrails.ps1
 }
 
-# 3. Resolve and Verify Global Brain
+# 3. Resolve and Verify Brain
 $brainPath = ""
 if ($brain -eq "global") {
     $homeDir = [System.Environment]::GetFolderPath("UserProfile")
-    $brainPath = "$homeDir\.agentbrain"
+    # V3.0 Standard: .agentrealm for global brain
+    $brainPath = Join-Path $homeDir ".agentrealm"
     
     if (-not (Test-Path $brainPath)) {
         Write-Host "Global AgentBrain not found at $brainPath. Attempting to clone from $brainRepo..." -ForegroundColor Cyan
@@ -106,7 +104,7 @@ if ($brain -eq "global") {
         }
     }
 } elseif ($brain -eq "local") {
-    $brainPath = "$(Get-Location)\ai\brain"
+    $brainPath = Join-Path (Get-Location) "ai/brain"
     if (-not (Test-Path $brainPath)) {
         New-Item -ItemType Directory -Path $brainPath -Force | Out-Null
     }
@@ -114,6 +112,7 @@ if ($brain -eq "global") {
 
 if ($brain -ne "none") {
     Write-Host "Connecting to AgentBrain ($brain) at $brainPath..." -ForegroundColor Cyan
+    
     # Update .env
     $envPath = ".env"
     if (Test-Path $envPath) {
@@ -157,39 +156,65 @@ Write-Host "Verifying project requirements..." -ForegroundColor Cyan
 .\ai\scripts\helpers\check-requirements.ps1 -Install
 
 # 5. Setup Python Virtual Environment
-if (Get-Command python -ErrorAction SilentlyContinue) {
-    Write-Host "Setting up Python virtual environment..." -ForegroundColor Cyan
+function Get-RealPython {
+    $py = "python"
+    $found = Get-Command $py -ErrorAction SilentlyContinue
+    if ($found) {
+        & $py --version 2>$null
+        if ($LASTEXITCODE -eq 0) { return $py }
+    }
+    $py = "python3"
+    $found = Get-Command $py -ErrorAction SilentlyContinue
+    if ($found) {
+        & $py --version 2>$null
+        if ($LASTEXITCODE -eq 0) { return $py }
+    }
+    return $null
+}
+
+$pyCmd = Get-RealPython
+if ($pyCmd) {
+    Write-Host "Setting up Python virtual environment using $pyCmd..." -ForegroundColor Cyan
     if (-not (Test-Path .venv)) {
-        python -m venv .venv
+        & $pyCmd -m venv .venv
         Write-Host "Virtual environment created." -ForegroundColor Green
     }
-    
+
+    $pipCmd = ".venv\Scripts\pip.exe"
+    if (-not (Test-Path $pipCmd)) { $pipCmd = ".venv\bin\pip" }
+
     # Install base requirements
-    .\.venv\Scripts\pip.exe install -r requirements.txt 2>$null
+    & $pipCmd install -r requirements.txt 2>$null
 
     # Install RAG requirements based on mode
     if ($rag -eq "cloud") {
         Write-Host "Installing RAG Cloud dependencies..." -ForegroundColor Cyan
-        .\.venv\Scripts\pip.exe install -r ai/config/requirements-rag-cloud.txt
-    } elseif ($rag -eq "local") {
+        & $pipCmd install -r ai/config/requirements-rag-cloud.txt
+    }
+    elseif ($rag -eq "local") {
         Write-Host "Installing RAG Local dependencies..." -ForegroundColor Yellow
-        .\.venv\Scripts\pip.exe install -r ai/config/requirements-rag-local.txt
+        & $pipCmd install -r ai/config/requirements-rag-local.txt
     }
 
     # Update VS Code settings for Python
     $settingsPath = ".vscode/settings.json"
     if (Test-Path $settingsPath) {
         $settings = Get-Content $settingsPath | ConvertFrom-Json
-        $settings | Add-Member -MemberType NoteProperty -Name "python.defaultInterpreterPath" -Value "`${workspaceFolder}/.venv/Scripts/python.exe" -Force
+        $interpreterPath = "`${workspaceFolder}/.venv/Scripts/python.exe"
+        if (-not (Test-Path ".venv/Scripts/python.exe")) { $interpreterPath = "`${workspaceFolder}/.venv/bin/python" }
+        
+        $settings | Add-Member -MemberType NoteProperty -Name "python.defaultInterpreterPath" -Value $interpreterPath -Force
         $settings | Add-Member -MemberType NoteProperty -Name "python.terminal.activateEnvInSelectedTerminal" -Value $true -Force
         $settings | ConvertTo-Json -Depth 10 | Set-Content $settingsPath
         Write-Host "VS Code Python settings updated." -ForegroundColor Green
     }
+} else {
+    Write-Host "Warning: Valid Python not found. Skipping virtual environment setup." -ForegroundColor Yellow
 }
 
 Write-Host ""
-Write-Host "Project bootstrapped (V2.4)." -ForegroundColor Green
+Write-Host "Project bootstrapped (V3.0)." -ForegroundColor Green
 Write-Host "  Name:  $name"
-Write-Host "  Brain: $brainPath"
+Write-Host "  Brain: $brain ($brainPath)"
 Write-Host "  RAG:   $rag"
 Write-Host "  Env:   .env created"

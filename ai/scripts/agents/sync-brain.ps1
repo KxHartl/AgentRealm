@@ -39,10 +39,19 @@ if (Test-Path $brainPath) {
     Copy-Item -Path "$brainPath\*" -Destination $localCache -Recurse -Force -Exclude ".git"
     
     Write-Host "Updating local RAG vector store..." -ForegroundColor Cyan
+    $pyCmd = "python"
     if (Test-Path ".venv\Scripts\python.exe") {
-        & ".venv\Scripts\python.exe" "ai/ingestion/doc_parser.py"
+        $pyCmd = ".venv\Scripts\python.exe"
+    } elseif (Test-Path ".venv\bin\python") {
+        $pyCmd = ".venv\bin\python"
+    }
+
+    # Verify python is real
+    & $pyCmd --version 2>$null
+    if ($LASTEXITCODE -eq 0) {
+        & $pyCmd "ai/ingestion/doc_parser.py"
     } else {
-        python "ai/ingestion/doc_parser.py"
+        Write-Host "Warning: Valid Python not found. Skipping RAG ingestion." -ForegroundColor Yellow
     }
     
     Write-Host "--- Sync Complete (Local Cache Updated) ---" -ForegroundColor Green
