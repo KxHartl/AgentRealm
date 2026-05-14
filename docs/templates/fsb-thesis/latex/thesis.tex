@@ -1,13 +1,18 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[croatian]{babel}
 \usepackage[T1]{fontenc}
-\usepackage{graphicx}
+\usepackage[croatian]{babel}
 \usepackage{geometry}
+\usepackage{graphicx}
 \usepackage{setspace}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{caption}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 % Postavke margina
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
@@ -15,31 +20,65 @@
 % Prored 1.5
 \onehalfspacing
 
-% Stilovi naslova
+% Naslovi
 \titleformat{\section}{\normalfont\Large\bfseries\uppercase}{}{0pt}{}
 \titleformat{\subsection}{\normalfont\large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
+
+% Nazivi automatskih popisa
+\renewcommand{\contentsname}{SADRŽAJ}
+\renewcommand{\listfigurename}{POPIS SLIKA}
+\renewcommand{\listtablename}{POPIS TABLICA}
+\renewcommand{\refname}{LITERATURA}
 
 \begin{document}
 
 % --- NASLOVNICA ---
 \begin{titlepage}
-    \begin{center}
-        {\large SVEUČILIŠTE U ZAGREBU} \\
-        {\large FAKULTET STROJARSTVA I BRODOGRADNJE} \\
-        \vspace{4cm}
-        {\large {{SMJER_STUDIJA}}} \\
-        \vspace{2cm}
-        {\large {{IME_I_PREZIME}}} \\
-        \vspace{2cm}
-        {\Huge \textbf{{{NASLOV_RADA}}}} \\
-        \vspace{1cm}
-        {\Large \textbf{DIPLOMSKI RAD}} \\
-        \vfill
-        {\large Mentor: {{MENTOR}}} \\
-        \vspace{2cm}
-        {\large Zagreb, {{GODINA}}.}
-    \end{center}
+    \centering
+    {\large SVEUČILIŠTE U ZAGREBU\\}
+    {\large FAKULTET STROJARSTVA I BRODOGRADNJE\\}
+    \vspace{2.5cm}
+    {\Large DIPLOMSKI RAD\\}
+    \vspace{1.5cm}
+    {\Huge \textbf{{{NASLOV_RADA}}}\\}
+    \vspace{1.5cm}
+    {\large {{IME_I_PREZIME}}\\}
+    \vfill
+    {\large Mentori: {{MENTORI}}\\}
+    \vspace{1cm}
+    {\large Zagreb, {{GODINA}}.}
 \end{titlepage}
+
+% --- IZJAVA I ZAHVALA ---
+\begin{titlepage}
+    \thispagestyle{empty}
+    \centering
+    {\large SVEUČILIŠTE U ZAGREBU\\}
+    {\large FAKULTET STROJARSTVA I BRODOGRADNJE\\}
+    \vspace{2.5cm}
+    {\Large DIPLOMSKI RAD\\}
+    \vspace{1.25cm}
+    {\Large \textbf{{{NASLOV_RADA}}}\\}
+    \vspace{1cm}
+    {\large Mentori: {{MENTORI}}\\}
+    {\large Student: {{IME_I_PREZIME}}\\}
+    \vfill
+    \begin{minipage}{0.9\textwidth}
+    \noindent Izjavljujem da sam ovaj rad izradio samostalno koristeći znanja stečena tijekom studija i navedenu literaturu.
+    \end{minipage}
+
+    \vspace{1.5cm}
+
+    \begin{minipage}{0.9\textwidth}
+    \noindent Zahvaljujem se {{ZAHVALA_TEKST}}
+    \end{minipage}
+
+    \vspace{2cm}
+    {\large {{IME_I_PREZIME}}}
+\end{titlepage}
+
+\pagenumbering{roman}
 
 % --- SADRŽAJ I POPISI ---
 \tableofcontents
@@ -49,8 +88,41 @@
 \listoftables
 \newpage
 
-% --- SADRŽAJ ---
+\section*{POPIS TEHNIČKE DOKUMENTACIJE}
+\addcontentsline{toc}{section}{POPIS TEHNIČKE DOKUMENTACIJE}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.28\textwidth}X}
+\textbf{BROJ CRTEŽA} & \textbf{Naziv iz sastavnice} \\
+{{POPIS_TEHNICKE_DOKUMENTACIJE}} & \\
+\end{tabularx}
 
+\newpage
+\section*{POPIS OZNAKA}
+\addcontentsline{toc}{section}{POPIS OZNAKA}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.2\textwidth}X}
+\textbf{Oznaka} & \textbf{Jedinica} & \textbf{Opis} \\
+{{POPIS_OZNAKA}} & & \\
+\end{tabularx}
+
+\newpage
+\section*{SAŽETAK}
+\addcontentsline{toc}{section}{SAŽETAK}
+{{SAZETAK_TEKST}}
+
+\vspace{0.75cm}
+\noindent \textbf{Ključne riječi:} {{KLJUCNE_RIJECI}}
+
+\newpage
+\section*{SUMMARY}
+\addcontentsline{toc}{section}{SUMMARY}
+{{SUMMARY_TEKST}}
+
+\vspace{0.75cm}
+\noindent \textbf{Key words:} {{KEY_WORDS}}
+
+\newpage
+\pagenumbering{arabic}
+
+% --- SADRŽAJ RADA ---
 {{GENERIRANI_SADRZAJ}}
 
 % --- LITERATURA ---
@@ -58,5 +130,10 @@
 \begin{thebibliography}{99}
 {{LITERATURA}}
 \end{thebibliography}
+
+% --- PRILOZI ---
+\appendix
+\section{PRILOZI}
+{{PRILOZI}}
 
 \end{document}

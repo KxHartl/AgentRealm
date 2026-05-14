@@ -1,15 +1,18 @@
 \documentclass[12pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
-\usepackage[croatian]{babel}
 \usepackage[T1]{fontenc}
-\usepackage{graphicx}
+\usepackage[croatian]{babel}
 \usepackage{geometry}
+\usepackage{graphicx}
 \usepackage{setspace}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
 \usepackage{caption}
-\usepackage[none]{hyphenat} % Onemogućava rezanje riječi
-\sloppy % Pomaže kod poravnanja bez rezanja riječi
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 % Postavke margina
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
@@ -17,29 +20,39 @@
 % Prored 1.5
 \onehalfspacing
 
-% Stilovi naslova
+% Naslovi
 \titleformat{\section}{\normalfont\Large\bfseries\uppercase}{}{0pt}{}
 \titleformat{\subsection}{\normalfont\large\bfseries}{}{0pt}{}
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
+
+% Nazivi automatskih popisa
+\renewcommand{\contentsname}{SADRŽAJ}
+\renewcommand{\listfigurename}{POPIS SLIKA}
+\renewcommand{\listtablename}{POPIS TABLICA}
+\renewcommand{\refname}{LITERATURA}
 
 \begin{document}
 
 % --- NASLOVNICA ---
 \begin{titlepage}
-    \begin{center}
-        {\large SVEUČILIŠTE U ZAGREBU} \\
-        {\large FAKULTET STROJARSTVA I BRODOGRADNJE} \\
-        \vspace{6cm}
-        {\large KOLEGIJ: {{KOLEGIJ}}} \\
-        \vspace{2cm}
-        {\Huge \textbf{SEMINAR}} \\
-        \vspace{1cm}
-        {\Large \textbf{{{NASLOV_SEMINARA}}}} \\
-        \vfill
-        {\large {{IME_I_PREZIME}}} \\
-        \vspace{2cm}
-        {\large Zagreb, {{GODINA}}.}
-    \end{center}
+    \thispagestyle{empty}
+    \centering
+    {\large SVEUČILIŠTE U ZAGREBU\\}
+    {\large FAKULTET STROJARSTVA I BRODOGRADNJE\\}
+    \vspace{3.5cm}
+    {\Large {{KOLEGIJ}}\\}
+    \vspace{2cm}
+    {\Huge \textbf{SEMINAR}\\}
+    \vspace{2cm}
+    {\Huge \textbf{{{NASLOV_SEMINARA}}}\\}
+    \vfill
+    {\large Profesor: {{PROFESOR}}\\}
+    {\large Student: {{IME_I_PREZIME}}\\}
+    \vspace{1cm}
+    {\large Zagreb, {{GODINA}}.}
 \end{titlepage}
+
+\pagenumbering{roman}
 
 % --- SADRŽAJ I POPISI ---
 \tableofcontents
@@ -49,8 +62,9 @@
 \listoftables
 \newpage
 
-% --- SADRŽAJ (Ovdje AI ubacuje tekst) ---
+\pagenumbering{arabic}
 
+% --- SADRŽAJ RADA ---
 {{GENERIRANI_SADRZAJ}}
 
 % --- LITERATURA ---
@@ -58,5 +72,10 @@
 \begin{thebibliography}{99}
 {{LITERATURA}}
 \end{thebibliography}
+
+% --- PRILOZI ---
+\appendix
+\section{PRILOZI}
+{{PRILOZI}}
 
 \end{document}
