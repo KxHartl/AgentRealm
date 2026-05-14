@@ -26,6 +26,7 @@
 
 ## Changelog
 
+- 2026-05-14: **V3.0 Bootstrap Hardening** — Robust Python detection, support for `-brain` parameter, and improved requirements check for Windows/Linux.
 - 2026-05-11: **V2 Refactor** — Clean Root architecture, CRAG pipeline, data/rag + data/process separation.
 - 2026-05-07: Standardized PR workflow with a new GitHub PR template.
 - 2026-05-07: Added automated Python Virtual Environment setup to bootstrap script.

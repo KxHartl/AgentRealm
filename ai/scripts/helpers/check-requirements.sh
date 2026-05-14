@@ -29,12 +29,56 @@ while IFS='|' read -r scope name command required min_version install_hint notes
   [[ -z "${scope// }" ]] && continue
   [[ "$scope" == \#* ]] && continue
 
-  if command -v "$command" >/dev/null 2>&1; then
+# Function to check if a command or package is available
+check_requirement() {
+  local scope="$1"
+  local name="$2"
+  local command="$3"
+
+  if [[ "$scope" == "python" ]]; then
+    # Try to use the project's venv if it exists, otherwise system python
+    local py_cmd="python"
+    if [[ -f ".venv/bin/python" ]]; then
+      py_cmd=".venv/bin/python"
+    elif [[ -f ".venv/Scripts/python.exe" ]]; then
+      py_cmd=".venv/Scripts/python.exe"
+    elif command -v python3 >/dev/null 2>&1; then
+      py_cmd="python3"
+    fi
+    
+    $py_cmd -c "import $command" >/dev/null 2>&1
+    return $?
+  else
+    # For global scope, we use command -v
+    # Special check for Windows 'stubs'
+    if [[ "$command" == "python" || "$command" == "python3" ]]; then
+       if command -v "$command" >/dev/null 2>&1; then
+          # Verify it's not the Microsoft Store stub
+          $command --version >/dev/null 2>&1
+          return $?
+       fi
+       return 1
+    fi
+    command -v "$command" >/dev/null 2>&1
+    return $?
+  fi
+}
+
+while IFS='|' read -r scope name command required min_version install_hint notes; do
+  [[ -z "${scope// }" ]] && continue
+  [[ "$scope" == \#* ]] && continue
+
+  if check_requirement "$scope" "$name" "$command"; then
     printf '%-10s %-14s %-10s %s\n' "$scope" "$name" "OK" "$notes"
   else
     if [[ "$install_flag" == true ]]; then
       printf '%-10s %-14s %-10s %s\n' "$scope" "$name" "INSTALLING" "Attempting install..."
-      if command -v brew >/dev/null 2>&1; then
+      if [[ "$scope" == "python" ]]; then
+         local pip_cmd="pip"
+         [[ -f ".venv/bin/pip" ]] && pip_cmd=".venv/bin/pip"
+         [[ -f ".venv/Scripts/pip.exe" ]] && pip_cmd=".venv/Scripts/pip.exe"
+         $pip_cmd install $name || true
+      elif command -v brew >/dev/null 2>&1; then
         brew install "$name" || true
       elif command -v apt-get >/dev/null 2>&1; then
         sudo apt-get install -y "$name" || true

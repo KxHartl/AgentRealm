@@ -114,22 +114,39 @@ echo "Verifying project requirements..."
 bash ./ai/scripts/helpers/check-requirements.sh || echo "Warning: Some requirements are missing."
 
 # 5. Setup Python & install RAG deps
-if command -v python3 >/dev/null 2>&1; then
+get_python() {
+  if command -v python >/dev/null 2>&1 && python -c "import sys" >/dev/null 2>&1; then
+    echo "python"
+  elif command -v python3 >/dev/null 2>&1 && python3 -c "import sys" >/dev/null 2>&1; then
+    echo "python3"
+  else
+    echo ""
+  fi
+}
+
+PY_CMD=$(get_python)
+if [[ -n "$PY_CMD" ]]; then
   if [[ ! -d ".venv" ]]; then
-    python3 -m venv .venv
+    $PY_CMD -m venv .venv
     echo "Virtual environment created."
   fi
 
+  # Determine correct path to pip
+  PIP_CMD=".venv/bin/pip"
+  [[ -f ".venv/Scripts/pip.exe" ]] && PIP_CMD=".venv/Scripts/pip.exe"
+
   # Install base requirements
-  .venv/bin/pip install -r requirements.txt 2>/dev/null || true
+  $PIP_CMD install -r requirements.txt 2>/dev/null || true
 
   if [[ "$rag" == "cloud" ]]; then
     echo "Installing RAG Cloud dependencies..."
-    .venv/bin/pip install -r ai/config/requirements-rag-cloud.txt
+    $PIP_CMD install -r ai/config/requirements-rag-cloud.txt
   elif [[ "$rag" == "local" ]]; then
     echo "Installing RAG Local dependencies..."
-    .venv/bin/pip install -r ai/config/requirements-rag-local.txt
+    $PIP_CMD install -r ai/config/requirements-rag-local.txt
   fi
+else
+  echo "Warning: Python not found or invalid (Microsoft Store stub?). Skipping venv setup."
 fi
 
 echo ""

@@ -40,23 +40,56 @@ Get-Content $manifest | ForEach-Object {
     $installHint = $parts[5].Trim()
     $notes = $parts[6].Trim()
 
-    $found = Get-Command $command -ErrorAction SilentlyContinue
+    $isPythonScope = ($scope -eq "python")
+    $found = $false
+
+    if ($isPythonScope) {
+        $pyCmd = "python"
+        if (Test-Path ".venv/Scripts/python.exe") {
+            $pyCmd = ".venv/Scripts/python.exe"
+        } elseif (Test-Path ".venv/bin/python") {
+            $pyCmd = ".venv/bin/python"
+        }
+        
+        & $pyCmd -c "import $command" 2>$null
+        $found = ($LASTEXITCODE -eq 0)
+    } else {
+        $cmdInfo = Get-Command $command -ErrorAction SilentlyContinue
+        if ($cmdInfo) {
+            # Check for Windows stub if it's python
+            if ($command -eq "python" -or $command -eq "python3") {
+                & $command --version 2>$null
+                $found = ($LASTEXITCODE -eq 0)
+            } else {
+                $found = $true
+            }
+        }
+    }
 
     if ($found) {
         Write-Host ("{0,-10} {1,-14} {2,-10} {3}" -f $scope, $name, "OK", $notes)
     } else {
         if ($Install) {
-            Write-Host ("{0,-10} {1,-14} {2,-10} {3}" -f $scope, $name, "INSTALLING", "Attempting winget install...")
-            # Try to guess ID from hint or use name
-            $wingetId = $name
-            if ($installHint -match "Install (.*)") {
-                $wingetId = $matches[1]
+            Write-Host ("{0,-10} {1,-14} {2,-10} {3}" -f $scope, $name, "INSTALLING", "Attempting install...")
+            if ($isPythonScope) {
+                $pipCmd = "pip"
+                if (Test-Path ".venv/Scripts/pip.exe") {
+                    $pipCmd = ".venv/Scripts/pip.exe"
+                }
+                & $pipCmd install $name
+            } else {
+                # Try to guess ID from hint or use name
+                $wingetId = $name
+                if ($installHint -match "Install (.*)") {
+                    $wingetId = $matches[1]
+                }
+                winget install --id $wingetId --silent --accept-package-agreements --accept-source-agreements
             }
-            winget install --id $wingetId --silent --accept-package-agreements --accept-source-agreements
+            
             if ($LASTEXITCODE -eq 0) {
                 Write-Host "Successfully installed $name" -ForegroundColor Green
             } else {
-                Write-Host "Failed to install $name via winget. Please do it manually: $installHint" -ForegroundColor Red
+                Write-Host "Failed to install $name. Please do it manually: $installHint" -ForegroundColor Red
                 $status = 1
             }
         } else {
