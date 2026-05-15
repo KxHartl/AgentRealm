@@ -91,6 +91,14 @@ $brainPath = "$homeDir\.agentbrain"
 
 Write-Host "Connecting to Global AgentBrain at $brainPath..." -ForegroundColor Cyan
 if (Test-Path $brainPath) {
+    $content = Get-Content .env
+    $envBrainPath = $brainPath -replace '\\', '/'
+    if ($content -match "GLOBAL_BRAIN_PATH=") {
+        $content = $content -replace "GLOBAL_BRAIN_PATH=.*", "GLOBAL_BRAIN_PATH=$envBrainPath"
+    } else {
+        $content += "GLOBAL_BRAIN_PATH=$envBrainPath"
+    }
+    $content | Set-Content .env
     if (Test-Path "$brainPath\.git") {
         Write-Host "Brain is a git repo. Pulling latest skills..." -ForegroundColor Cyan
         pushd $brainPath

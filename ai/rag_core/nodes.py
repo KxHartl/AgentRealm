@@ -37,7 +37,7 @@ def _generate_queries(question: str) -> list[str]:
     print(f"  Generating variations for: {question}")
     try:
         from langchain_google_genai import ChatGoogleGenerativeAI
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0)
+        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0)
         prompt = ChatPromptTemplate.from_messages([
             ("system", "You are an AI assistant that generates three different versions of a user question to retrieve relevant documents from a vector database. \n"
                        "By generating multiple perspectives on the user query, your goal is to help the user overcome some of the limitations of distance-based similarity search. \n"
