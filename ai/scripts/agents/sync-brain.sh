@@ -22,11 +22,16 @@ if [ -d "$BRAIN_PATH" ]; then
   fi
   
   echo "Updating local RAG vector store..."
-  if [ -f ".venv/bin/python" ]; then
-    .venv/bin/python ai/ingestion/doc_parser.py
-  else
-    python3 ai/ingestion/doc_parser.py
+  PY_CMD="python"
+  if [[ -f ".venv/bin/python" ]]; then
+    PY_CMD=".venv/bin/python"
+  elif [[ -f ".venv/Scripts/python.exe" ]]; then
+    PY_CMD=".venv/Scripts/python.exe"
+  elif command -v python3 >/dev/null 2>&1 && python3 --version >/dev/null 2>&1; then
+    PY_CMD="python3"
   fi
+  
+  $PY_CMD ai/ingestion/doc_parser.py || echo "Warning: RAG ingestion failed. Python might be missing or invalid."
   
   echo "--- Sync Complete ---"
 else

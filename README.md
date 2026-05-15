@@ -1,156 +1,118 @@
 # AgentRealm
 
-Universal template for **projects, seminars, and research** with a seamless Human + AI-Agent workflow. Built around a **"Clean Root"** philosophy: your work is front and center, all automation is tucked away.
+---
+
+## 🏛️ Filozofija "Clean Root"
+
+AgentRealm je dizajniran da tvoj rad drži u fokusu. Sva kompleksna automatizacija, RAG sustavi i agentske sandbox okoline skriveni su u `ai/` direktoriju, dok korijen repozitorija ostaje čist i pregledan.
+
+| Direktorij | Svrha                                              | Fokus          |
+| :--------- | :------------------------------------------------- | :------------- |
+| 🚀 `src/`  | Glavni kod projekta, algoritmi i skripte.          | **Tvoj Rad**   |
+| 📝 `docs/` | Dokumentacija, seminari, LaTeX i izvještaji.       | **Tvoj Rad**   |
+| 📊 `data/` | Podaci podijeljeni na RAG izvore i projektne baze. | **Tvoj Rad**   |
+| ⚙️ `ai/`   | "Engine Room" — skripte, agenti i infrastruktura.  | Infrastruktura |
 
 ---
 
-## Clean Root Philosophy
+## ⚡ Pokretanje novog projekta
 
-Your repository root shows only what matters: **your code, your data, your documents.**
+Spremite sate podešavanja jednom naredbom. AgentRealm automatski konfigurira virtualne okoline, instalira ovisnosti i povezuje se s tvojim globalnim znanjem.
 
-| Directory | Purpose | Visibility |
-|-----------|---------|------------|
-| `src/` | Your project code, homework, assignments | **Your work** |
-| `docs/` | Academic writing, seminars, LaTeX, thesis | **Your work** |
-| `data/` | All datasets, split into RAG knowledge and project data | **Your work** |
-| `ai/` | The "Engine Room" — all automation, RAG, scripts, agent sandboxes | Infrastructure |
+### 🛠️ Konfiguracijske opcije
 
-### Data Separation
+Prilikom pokretanja bootstrap skripte, dostupni su sljedeći parametri:
 
-```
-data/
-├── rag/                  # LLM Knowledge Base (Read-Only)
-│   ├── sources/          # Original PDFs, textbooks, lecture slides
-│   ├── parsed/           # Clean Markdown extracted by ingestion pipeline
-│   └── vector_store/     # ChromaDB vector database (auto-generated)
-│
-└── process/              # Project Working Data (Read-Write)
-    ├── raw/              # Raw measurements, images, survey datasets
-    ├── intermediate/     # Data being cleaned or processed
-    └── output/           # Final charts, reports, CSV/JSON results
-```
+| Parametar    | Opis                  | Vrijednosti               | Default      | Napomena                              |
+| :----------- | :-------------------- | :------------------------ | :----------- | :------------------------------------ |
+| **`-name`**  | Identitet projekta    | `Text`                    | _(Obavezno)_ | Ažurira `project.yaml` i `STATE.md`.  |
+| **`-brain`** | Mod dijeljenog znanja | `none`, `global`, `local` | `global`     | Povezuje SSOT vještine i lekcije.     |
+| **`-rag`**   | AI Retrieval Mod      | `none`, `cloud`, `local`  | `none`       | Određuje ovisnosti i ML modele.       |
+| **`-ide`**   | Editor konfiguracija  | `vscode`, `antigravity`   | `vscode`     | Postavlja `.vscode` i agent sandboxe. |
 
-> **Rule**: RAG data is **Read-Only** reference material for the LLM. Process data is **Read-Write** operational data for your specific project.
+#### 🤖 Usporedba RAG modova
 
----
+| Mod         | Otisak  | Zahtjevi         | Prednosti                            |
+| :---------- | :------ | :--------------- | :----------------------------------- |
+| **`none`**  | ~0 MB   | —                | Brzo, bez ML ovisnosti.              |
+| **`cloud`** | ~200 MB | `GOOGLE_API_KEY` | Lagano, koristi Gemini API (online). |
+| **`local`** | ~1.2 GB | GPU (opcionalno) | Privatno, radi 100% offline.         |
 
-## Quick Start
+### 🚀 Primjeri inicijalizacije
 
-### 1. Initialize & Install
-
-Clone this template and run the bootstrap script:
-
-| OS          | Command                                                                                            |
-| :---------- | :------------------------------------------------------------------------------------------------- |
-| **Windows** | `.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -ide "vscode" -rag none`            |
-| **Linux**   | `./ai/scripts/helpers/bootstrap-project.sh --name "My Project" --ide "antigravity" --rag none`      |
-
-### 2. Configure GitHub (Optional)
-
-If you are logged into the `gh` CLI, the script will automatically apply branch protection rules from `ai/config/github/ruleset.json`.
-
----
-
-## Human + Agent Workflow
-
-AgentRealm uses **Git Worktrees** to create sandboxes (`ai/worktrees/`) for every task.
-
-### Step 1: Start a Task
+**Windows (PowerShell):**
 
 ```powershell
-.\ai\scripts\git\new-task-worktree.ps1 my-task-slug
+.\\ai\\scripts\\helpers\\bootstrap-project.ps1 -name "Moj_Projekt" -brain global -rag cloud
 ```
 
-### Step 2: Delegate to Agent
+_Zadana globalna putanja:_ `~/.agentbrain` (Windows) / `~/.agentrealm` (Linux)
 
-```powershell
-.\ai\scripts\agents\run_gemini_task.ps1 ai\worktrees\my-task-slug
-```
-
-### Step 3: Sanity Check & Merge
-
-```powershell
-.\ai\scripts\helpers\check-all.ps1
-.\ai\scripts\git\cleanup-worktrees.ps1 ai\worktrees\my-task-slug
-```
-
----
-
-## RAG Modes
-
-RAG is **opt-in**. By default, no AI/ML packages are installed (zero overhead).
-
-| Mode | Flag | `.venv` Size | Embedding Provider | Offline? |
-|------|------|-------------|-------------------|----------|
-| **none** | `-rag none` (default) | ~0 MB | — | ✅ |
-| **cloud** | `-rag cloud` | ~200 MB | Gemini API | ❌ |
-| **local** | `-rag local` | ~1.2 GB | sentence-transformers | ✅ |
-
-### Enable RAG
-
-```powershell
-# Cloud mode (lightweight, needs GOOGLE_API_KEY)
-.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -rag cloud
-
-# Local mode (heavy, works offline)
-.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -rag local
-```
-
-### Global Brain (Cross-Project Knowledge)
-
-You can link a shared repository (e.g., `AgentBrain`) to keep skills and lessons learned synchronized across all your projects:
-
-```powershell
-.\ai\scripts\helpers\bootstrap-project.ps1 -name "My Project" -brain "git@github.com:user/AgentBrain.git"
-```
-
-The bootstrap script will clone it into `ai/knowledge/global/`, and the RAG pipeline will automatically index it.
-
-### Cloud Mode Setup (Gemini API)
-
-1. Get a free API key from [Google AI Studio](https://aistudio.google.com/apikey)
-2. Set the key in your environment:
-
-```powershell
-# Option A: Set in current session
-$env:GOOGLE_API_KEY = "your-api-key-here"
-
-# Option B: Add to .env file (recommended, persists across sessions)
-echo 'GOOGLE_API_KEY=your-api-key-here' >> .env
-```
+**Linux / macOS (Bash):**
 
 ```bash
-# Linux/macOS
-export GOOGLE_API_KEY="your-api-key-here"
-# or add to .env
-echo 'GOOGLE_API_KEY=your-api-key-here' >> .env
+./ai/scripts/helpers/bootstrap-project.sh --name "Moj_Projekt" --brain global --rag cloud
 ```
 
-> **Note**: The `.env` file is gitignored by default — your key stays private. The Gemini free tier is permanent with generous rate limits, no credit card required.
+_Zadana globalna putanja:_ `~/.agentrealm`
 
-### Ingest & Chat
+#### 🧠 Modovi mozga (Brain Modes)
 
-Place your PDFs, textbooks, or lecture slides into `data/rag/sources/`, then:
-
-```powershell
-python ai/ingestion/doc_parser.py          # Parse & build vector store
-.\ai\scripts\agents\start-rag-chat.ps1     # Interactive CRAG chat
-```
-
-The CRAG pipeline will: **Retrieve** from your local knowledge base → **Grade** relevance → **Web Search** (if local docs are insufficient) → **Generate** an answer via Gemini.
+- **`none`**: Projekt je izoliran, ne koristi se dijeljeno znanje.
+- **`global`**: Koristi se SSOT direktorij u korisničkom profilu (`$HOME`). Ako direktorij ne postoji, AgentRealm će automatski pokušati povući (clonirati) **AgentBrain** repozitorij na tu lokaciju.
+- **`local`**: Brain se kreira unutar samog projekta (`ai/brain/`). Idealno za specifične istraživačke projekte.
 
 ---
 
-## LaTeX & Seminar Writing
+## 🔄 Workflow: Human + Agent Collaboration
 
-- **Engine**: MiKTeX (Windows) or TeX Live (Linux).
-- **Auto-Build**: PDF generates automatically on save.
-- **SyncTeX**: Double-click PDF to jump to code; `Ctrl+Alt+J` to jump to PDF.
-- **Standards**: Full justification without manual hyphenation.
+AgentRealm koristi **Git Worktrees** za potpunu izolaciju zadataka. Agent nikada ne radi direktno na tvojoj `main` grani.
+
+1.  **Start Task**: Kreiraj sandbox za novi zadatak.
+    ```powershell
+    .\\ai\\scripts\\git\\new-task-worktree.ps1 "implement-feature-x"
+    ```
+2.  **Delegate**: Pošalji agenta u akciju.
+    ```powershell
+    .\\ai\\scripts\\agents\\run_claude_task.ps1 ai\\worktrees\\implement-feature-x
+    ```
+3.  **Review & Merge**: Provjeri rezultat i spoji u projekt.
+    ```powershell
+    .\\ai\\scripts\\helpers\\check-all.ps1
+    .\\ai\\scripts\\git\\cleanup-worktrees.ps1 ai\\worktrees\\implement-feature-x
+    ```
 
 ---
 
-## Governance
+## 🧠 RAG & Global Knowledge
 
-- `ai/config/AGENTS.md` — Mandatory rules for all human and AI agents.
-- `STATE.md` — The "Live Brain" containing the project backlog and current focus.
+Poveži sve svoje projekte u jednu inteligentnu mrežu.
+
+- **Global Brain**: Dijeljeni repozitorij (`~/.agentbrain`) koji čuva tvoje vještine (`skills`) i naučene lekcije kroz sve projekte.
+- **CRAG Pipeline**: Agent prvo pretražuje tvoju lokalnu literaturu (`data/rag/sources`), zatim Global Brain, a po potrebi se konzultira s web pretragom.
+
+### Postavljanje Cloud RAG-a (Gemini)
+
+1. Preuzmi ključ na [Google AI Studio](https://aistudio.google.com/apikey).
+2. Dodaj u `.env`: `GOOGLE_API_KEY=tvoj_kljuc`.
+
+---
+
+## 🎓 Akademski Standardi (LaTeX)
+
+AgentRealm dolazi s ugrađenim predlošcima za **FSB (Fakultet strojarstva i brodogradnje)**:
+
+- ✅ **Seminar** | ✅ **Thesis** | ✅ **Paper**
+
+Automatski build, SyncTeX podrška i savršeno formatiranje bez ručnog namještanja margina.
+Pogledaj [docs/instructions.md](docs/instructions.md) za detaljan vodič kroz pisanje.
+
+---
+
+## 🛡️ Upravljanje & Sigurnost
+
+- **STATE.md**: "Live Brain" projekta — uvijek znaš što je sljedeće na redu.
+- **AGENTS.md**: Stroga pravila ponašanja za AI agente.
+- **Git Guardrails**: Automatska zaštita od slučajnog commita na krive grane ili curenja API ključeva.
+
+---
