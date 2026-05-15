@@ -10,6 +10,7 @@
 
 - Manifest: `ai/config/requirements.list`
 - Check command: `ai/scripts/helpers/check-requirements.[ps1|sh]`
+- Worktree Root: `ai/worktrees/rag-improvements`
 - Installation status: _Not checked yet._
 
 ## Current focus

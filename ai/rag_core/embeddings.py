@@ -9,6 +9,10 @@ embedding function. Supported modes:
 
 import os
 from typing import Optional
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 _WORKSPACE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 _CONFIG_PATH = os.path.join(_WORKSPACE_ROOT, "ai", "config", "project.yaml")
@@ -46,7 +50,7 @@ def get_embeddings(mode: Optional[str] = None):
     if mode == "cloud":
         from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-        return GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
+        return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
     elif mode == "local":
         from langchain_community.embeddings import HuggingFaceEmbeddings
