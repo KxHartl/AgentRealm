@@ -194,6 +194,40 @@ if ($pyCmd) {
     elseif ($rag -eq "local") {
         Write-Host "Installing RAG Local dependencies..." -ForegroundColor Yellow
         & $pipCmd install -r .ai/config/requirements-rag-local.txt
+
+        # Local LLM Orchestration: Detect and optionally install Ollama
+        Write-Host "Checking for Local LLM Orchestrator (Ollama)..." -ForegroundColor Cyan
+        $ollama = Get-Command ollama -ErrorAction SilentlyContinue
+        if (-not $ollama) {
+            Write-Host "Ollama not found. It is recommended for local RAG." -ForegroundColor Yellow
+            Write-Host "You can download it from https://ollama.com/" -ForegroundColor White
+            # Optional: Automated install could go here if requested
+        } else {
+            Write-Host "Ollama detected: $($ollama.Source)" -ForegroundColor Green
+            # Check if ollama is running
+            $ollamaProcess = Get-Process ollama -ErrorAction SilentlyContinue
+            if (-not $ollamaProcess) {
+                Write-Host "Ollama is installed but not running. Please start Ollama to use local LLMs." -ForegroundColor Yellow
+            }
+        }
+    }
+
+    # Add Tracing placeholders to .env
+    $envPath = ".env"
+    if (Test-Path $envPath) {
+        $envContent = Get-Content $envPath
+        if ($envContent -notmatch "LANGSMITH_TRACING=") {
+            $tracingLines = @(
+                "",
+                "# Tracing (LangSmith / Langfuse)",
+                "LANGSMITH_TRACING=false",
+                "LANGSMITH_ENDPOINT=https://api.smith.langchain.com",
+                "LANGSMITH_API_KEY=YOUR_LANGSMITH_API_KEY",
+                "LANGSMITH_PROJECT=agentrealm-$name"
+            )
+            $envContent + $tracingLines | Set-Content $envPath
+            Write-Host "Added LangSmith tracing scaffolding to .env." -ForegroundColor Green
+        }
     }
 
     # Update VS Code settings for Python

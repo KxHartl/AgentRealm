@@ -188,6 +188,33 @@ if [[ -n "$PY_CMD" ]]; then
   elif [[ "$rag" == "local" ]]; then
     echo "Installing RAG Local dependencies..."
     $PIP_CMD install -r .ai/config/requirements-rag-local.txt
+
+    # Local LLM Orchestration: Detect and check Ollama
+    echo "Checking for Local LLM Orchestrator (Ollama)..."
+    if command -v ollama >/dev/null 2>&1; then
+      echo "Ollama detected: $(command -v ollama)"
+      if ! pgrep -x "ollama" >/dev/null; then
+        echo "Warning: Ollama is installed but not running. Please start Ollama to run offline LLMs."
+      fi
+    else
+      echo "Ollama not found. It is recommended for local RAG."
+      echo "You can download it from https://ollama.com/"
+    fi
+  fi
+
+  # Add Tracing placeholders to .env
+  if [[ -f .env ]]; then
+    if ! grep -q "LANGSMITH_TRACING=" .env; then
+      cat <<EOF >> .env
+
+# Tracing (LangSmith / Langfuse)
+LANGSMITH_TRACING=false
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com
+LANGSMITH_API_KEY=YOUR_LANGSMITH_API_KEY
+LANGSMITH_PROJECT=agentrealm-${project_name}
+EOF
+      echo "Added LangSmith tracing scaffolding to .env."
+    fi
   fi
 else
   echo "Warning: Python not found or invalid (Microsoft Store stub?). Skipping venv setup."

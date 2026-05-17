@@ -19,11 +19,11 @@
 
 ## Backlog
 
-- [ ] **RAG Improvements**
-  - [ ] Implement RAG Fusion (Multi-query generation and reciprocal rank fusion).
-  - [ ] Integrate Cross-Encoder reranking for top-K results.
-  - [ ] Create automated evaluation scripts using RAGAS or custom metrics.
-  - [ ] Optimize chunking strategy in `doc_parser.py`.
+- [x] **RAG Improvements**
+  - [x] Implement Semantic Caching in `cache.py`.
+  - [x] Implement Multi-modal Document Parsing in `vision_parser.py`.
+  - [x] Add Local LLM Orchestration scaffolding to `bootstrap-project.ps1`.
+  - [x] Add Tracing (LangSmith) scaffolding to `.env`.
 - [ ] Test RAG Evaluation Pipeline with real-world scenarios.
 - [ ] Implement automated Cross-Encoder setup in bootstrap.
 - [ ] Refine QA Reviewer agent prompts for specific languages.
