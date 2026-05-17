@@ -10,6 +10,8 @@ Builds:      data/rag/vector_store/  (local project ChromaDB)
 
 import os
 import sys
+import re
+import urllib.request
 from typing import List
 from dotenv import load_dotenv
 
@@ -48,6 +50,75 @@ _TEXT_EXTENSIONS = {".md", ".tex", ".txt", ".py", ".yaml", ".yml"}
 _PDF_EXTENSIONS = {".pdf"}
 
 
+def _load_url(url: str) -> List[Document]:
+    """Fetch webpage or YouTube transcript and return as a List of Documents."""
+    url = url.strip()
+    if not url:
+        return []
+
+    print(f"    Fetching: {url}...")
+    
+    # 1. Check if it is a YouTube URL
+    if "youtube.com" in url or "youtu.be" in url:
+        try:
+            from youtube_transcript_api import YouTubeTranscriptApi
+            # Extract video ID
+            video_id = None
+            if "youtube.com/watch" in url:
+                video_id = url.split("v=")[1].split("&")[0]
+            elif "youtu.be/" in url:
+                video_id = url.split("youtu.be/")[1].split("?")[0]
+                
+            if video_id:
+                transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['hr', 'en', 'de'])
+                text = " ".join([t['text'] for t in transcript_list])
+                return [Document(
+                    page_content=text,
+                    metadata={"source": url, "title": f"YouTube Video: {video_id}", "source_type": "youtube_video"}
+                )]
+        except Exception as e:
+            print(f"      Warning: YouTube transcription failed: {e}")
+            pass
+
+    # 2. Treat as generic webpage
+    try:
+        req = urllib.request.Request(
+            url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        )
+        with urllib.request.urlopen(req, timeout=10) as response:
+            html = response.read()
+            
+        try:
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html, 'html.parser')
+            # Extract title
+            title = soup.title.string if soup.title else url
+            # Remove scripts and style elements
+            for script in soup(["script", "style", "header", "footer", "nav"]):
+                script.decompose()
+            # Extract clean text
+            text = soup.get_text(separator="\n")
+            # Clear multiple empty lines
+            text = re.sub(r'\n+', '\n', text).strip()
+            return [Document(
+                page_content=text,
+                metadata={"source": url, "title": title, "source_type": "web_page"}
+            )]
+        except Exception:
+            # Native raw html regex-based text extractor fallback
+            text_raw = html.decode('utf-8', errors='ignore')
+            text_clean = re.sub('<[^<]+?>', '', text_raw)
+            return [Document(
+                page_content=text_clean.strip(),
+                metadata={"source": url, "title": url, "source_type": "web_page"}
+            )]
+    except Exception as e:
+        print(f"      Warning: Failed to fetch webpage {url}: {e}")
+        
+    return []
+
+
 def _load_file(filepath: str) -> List[Document]:
     """Load a single file and return a list of Documents."""
     ext = os.path.splitext(filepath)[1].lower()
@@ -80,6 +151,24 @@ def load_sources() -> List[Document]:
                         doc.metadata["origin"] = "local_rag"
                     documents.extend(docs)
                     print(f"    + {os.path.relpath(filepath, _WORKSPACE_ROOT)}")
+
+        # 1.5 Load Online Web & Video Links
+        links_file = os.path.join(_SOURCES_DIR, "links.txt")
+        if os.path.isfile(links_file):
+            print(f"  Reading Online Links: {links_file}...")
+            try:
+                with open(links_file, "r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith(("http://", "https://")):
+                            docs = _load_url(line)
+                            for doc in docs:
+                                doc.metadata["file_type"] = ".html"
+                                doc.metadata["source_type"] = "scraped_online"
+                                doc.metadata["origin"] = "web_scraping"
+                            documents.extend(docs)
+            except Exception as e:
+                print(f"  Warning: Failed to read links file: {e}")
     else:
         print(f"  Warning: {_SOURCES_DIR} does not exist.")
 

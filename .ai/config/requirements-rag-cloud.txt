@@ -16,3 +16,7 @@ langchain-text-splitters>=0.3
 
 # Web Search (CRAG fallback)
 tavily-python>=0.5
+
+# Online Web & Video Scraping
+beautifulsoup4>=4.12
+youtube-transcript-api>=0.6
