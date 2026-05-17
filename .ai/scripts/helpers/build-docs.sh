@@ -37,10 +37,19 @@ done
 find docs -name "*.md" -not -path "*/templates/*" -not -name "README.md" | while read -r file; do
   echo "[Pandoc] Converting $(basename "$file") to PDF..."
   pdf_name="$(basename "$file" .md).pdf"
-  
-  pandoc "$file" -o "${dist_dir}/${pdf_name}" --pdf-engine=pdflatex
-  
-  if [[ $? -eq 0 ]]; then
+  output_path="${dist_dir}/${pdf_name}"
+
+  seminar_template="${root_dir}/.ai/templates/fsb-seminar/latex/seminar.tex"
+  compiler_script="${root_dir}/.ai/scripts/helpers/compile_seminar.py"
+
+  if [[ "$file" == *seminar* ]] && [[ -f "$seminar_template" ]] && [[ -f "$compiler_script" ]]; then
+    echo "FSB Seminar detected! Utilizing Auto-LaTeX compiler with templates..."
+    python3 "$compiler_script" "$file" "$seminar_template" "$output_path"
+  else
+    pandoc "$file" -o "$output_path" --pdf-engine=pdflatex
+  fi
+
+  if [[ $? -eq 0 ]] || [[ -f "$output_path" ]]; then
     echo "✅ Success: $pdf_name generated in dist/"
   else
     echo "❌ Failed to convert $file"
