@@ -40,7 +40,7 @@ $cleanState = @"
 ## Project info
 
 - Name: $name
-- Type: seminar
+- Type: project
 - Owner: $(whoami)
 
 ## Requirements
@@ -143,8 +143,34 @@ if ($brain -ne "none") {
 
 # Update README.md
 if (Test-Path README.md) {
-    (Get-Content README.md) -replace '^# AgentRealm', "# $name" | Set-Content README.md
-    (Get-Content README.md) -replace 'Universal template for \*\*projects, seminars, and research\*\*', "Project for **$name**, built using AgentRealm template" | Set-Content README.md
+    Write-Host "Creating clean project README.md..." -ForegroundColor Cyan
+    $cleanReadme = @"
+# $name
+
+## Overview
+Project **$name**, initialized via AgentRealm template.
+
+## Directory Structure
+- \`src/\`: Source code and project scripts.
+- \`docs/\`: Documentation and LaTeX files.
+- \`data/\`: Datasets and RAG sources.
+- \`.ai/\`: AgentRealm engine (infrastructure).
+
+## Getting Started
+Check \`STATE.md\` for current progress, tasks, and project goals.
+"@
+    $cleanReadme | Set-Content README.md
+}
+
+# Clear IDEAS.md
+if (Test-Path IDEAS.md) {
+    Write-Host "Resetting IDEAS.md..." -ForegroundColor Cyan
+    $cleanIdeas = @"
+# $name - Roadmap & Ideas (Untracked)
+
+This file is not tracked by Git. Use it for personal ideas, brainstorms, and plans for $name.
+"@
+    $cleanIdeas | Set-Content IDEAS.md
 }
 
 if (-not (Test-Path .ai/worktrees)) {
@@ -210,6 +236,16 @@ if ($pyCmd) {
     }
 } else {
     Write-Host "Warning: Valid Python not found. Skipping virtual environment setup." -ForegroundColor Yellow
+}
+
+# 6. Sever connection to template (Reset Git)
+if (Test-Path .git) {
+    Write-Host "Resetting git repository to sever connection with template..." -ForegroundColor Cyan
+    Remove-Item .git -Recurse -Force
+    git init
+    git add .
+    git commit -m "Initial commit for $name" | Out-Null
+    Write-Host "Git repository reset." -ForegroundColor Green
 }
 
 Write-Host ""

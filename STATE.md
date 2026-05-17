@@ -13,6 +13,9 @@
 - Installation status: _Not checked yet._
 
 ## Current focus
+- brain-evolution
+- workflow-dx
+- priority-improvements
 - rag-improvements (V3.1): Advanced RAG optimization, reranking, and evaluation.
 
 - **AgentRealm V3.1**: Improving retrieval accuracy with RAG Fusion, implementing Cross-Encoder reranking, and establishing an automated evaluation pipeline.

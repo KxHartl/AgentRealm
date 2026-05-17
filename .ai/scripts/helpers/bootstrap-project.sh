@@ -66,7 +66,7 @@ cat <<EOF > STATE.md
 ## Project info
 
 - Name: ${project_name}
-- Type: seminar
+- Type: project
 - Owner: $(whoami)
 
 ## Requirements
@@ -147,8 +147,32 @@ fi
 
 # Update README.md
 if [[ -f README.md ]]; then
-  sed -i "s/^# AgentRealm/# ${project_name}/" README.md
-  sed -i "s/Universal template for \*\*projects, seminars, and research\*\*/Project for **${project_name}**, built using AgentRealm template/" README.md
+  echo "Creating clean project README.md..."
+  cat <<EOF > README.md
+# ${project_name}
+
+## Overview
+Project **${project_name}**, initialized via AgentRealm template.
+
+## Directory Structure
+- \`src/\`: Source code and project scripts.
+- \`docs/\`: Documentation and LaTeX files.
+- \`data/\`: Datasets and RAG sources.
+- \`.ai/\`: AgentRealm engine (infrastructure).
+
+## Getting Started
+Check \`STATE.md\` for current progress, tasks, and project goals.
+EOF
+fi
+
+# Clear IDEAS.md
+if [[ -f IDEAS.md ]]; then
+  echo "Resetting IDEAS.md..."
+  cat <<EOF > IDEAS.md
+# ${project_name} - Roadmap & Ideas (Untracked)
+
+This file is not tracked by Git. Use it for personal ideas, brainstorms, and plans for ${project_name}.
+EOF
 fi
 
 mkdir -p .ai/worktrees
@@ -191,6 +215,16 @@ if [[ -n "$PY_CMD" ]]; then
   fi
 else
   echo "Warning: Python not found or invalid (Microsoft Store stub?). Skipping venv setup."
+fi
+
+# 6. Sever connection to template (Reset Git)
+if [[ -d .git ]]; then
+  echo "Resetting git repository to sever connection with template..."
+  rm -rf .git
+  git init
+  git add .
+  git commit -m "Initial commit for ${project_name}" >/dev/null
+  echo "Git repository reset."
 fi
 
 echo ""
