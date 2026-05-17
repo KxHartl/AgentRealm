@@ -37,7 +37,19 @@ def build_graph() -> StateGraph:
 
 
 def query(question: str) -> str:
-    """Run a single question through the CRAG pipeline."""
+    """Run a single question through the CRAG pipeline with Semantic Caching."""
+    try:
+        # Resolve imports dynamically to avoid circular dependencies
+        import sys
+        import os
+        sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
+        from data.rag.cache import get_cached_response
+        cached = get_cached_response(question)
+        if cached:
+            return cached
+    except Exception as e:
+        print(f"[Cache] Error checking cache: {e}")
+
     app = build_graph()
     result = app.invoke(
         {
@@ -47,7 +59,16 @@ def query(question: str) -> str:
             "web_search_needed": False,
         }
     )
-    return result.get("generation", "No answer generated.")
+    answer = result.get("generation", "No answer generated.")
+    
+    if answer and "No LLM configured" not in answer:
+        try:
+            from data.rag.cache import cache_response
+            cache_response(question, answer)
+        except Exception as e:
+            print(f"[Cache] Error storing in cache: {e}")
+
+    return answer
 
 
 if __name__ == "__main__":
