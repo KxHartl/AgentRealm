@@ -19,7 +19,7 @@ $ErrorActionPreference = "Continue"
 if (-not $RequirementsFile) {
     $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
     $RepoRoot = (Get-Item "$ScriptDir\..\..\..").FullName
-    $RequirementsFile = Join-Path $RepoRoot "..ai\templates\latex-requirements.txt"
+    $RequirementsFile = Join-Path $RepoRoot ".ai/templates/latex-requirements.txt"
 }
 
 if (-not (Test-Path $RequirementsFile)) {
