@@ -8,17 +8,22 @@
 
 ## Requirements
 
-- Manifest: `ai/config/requirements.list`
-- Check command: `ai/scripts/helpers/check-requirements.[ps1|sh]`
+- Manifest: `.ai/config/requirements.list`
+- Check command: `.ai/scripts/helpers/check-requirements.[ps1|sh]`
 - Installation status: _Not checked yet._
 
 ## Current focus
-- v3-enterprise-hardening
+- rag-improvements (V3.1): Advanced RAG optimization, reranking, and evaluation.
 
-- **AgentRealm V3.0**: Enterprise Guardrails, Advanced RAG (Fusion/Rerank), and Evaluation Pipeline.
+- **AgentRealm V3.1**: Improving retrieval accuracy with RAG Fusion, implementing Cross-Encoder reranking, and establishing an automated evaluation pipeline.
 
 ## Backlog
 
+- [ ] **RAG Improvements**
+  - [ ] Implement RAG Fusion (Multi-query generation and reciprocal rank fusion).
+  - [ ] Integrate Cross-Encoder reranking for top-K results.
+  - [ ] Create automated evaluation scripts using RAGAS or custom metrics.
+  - [ ] Optimize chunking strategy in `doc_parser.py`.
 - [ ] Test RAG Evaluation Pipeline with real-world scenarios.
 - [ ] Implement automated Cross-Encoder setup in bootstrap.
 - [ ] Refine QA Reviewer agent prompts for specific languages.

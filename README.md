@@ -4,14 +4,14 @@
 
 ## 🏛️ Filozofija "Clean Root"
 
-AgentRealm je dizajniran da tvoj rad drži u fokusu. Sva kompleksna automatizacija, RAG sustavi i agentske sandbox okoline skriveni su u `ai/` direktoriju, dok korijen repozitorija ostaje čist i pregledan.
+AgentRealm je dizajniran da tvoj rad drži u fokusu. Sva kompleksna automatizacija, RAG sustavi i agentske sandbox okoline skriveni su u `.ai/` direktoriju, dok korijen repozitorija ostaje čist i pregledan.
 
 | Direktorij | Svrha                                              | Fokus          |
 | :--------- | :------------------------------------------------- | :------------- |
 | 🚀 `src/`  | Glavni kod projekta, algoritmi i skripte.          | **Tvoj Rad**   |
 | 📝 `docs/` | Dokumentacija, seminari, LaTeX i izvještaji.       | **Tvoj Rad**   |
 | 📊 `data/` | Podaci podijeljeni na RAG izvore i projektne baze. | **Tvoj Rad**   |
-| ⚙️ `ai/`   | "Engine Room" — skripte, agenti i infrastruktura.  | Infrastruktura |
+| ⚙️ `.ai/`   | "Engine Room" — skripte, agenti i infrastruktura.  | Infrastruktura |
 
 ---
 
@@ -43,7 +43,7 @@ Prilikom pokretanja bootstrap skripte, dostupni su sljedeći parametri:
 **Windows (PowerShell):**
 
 ```powershell
-.\\ai\\scripts\\helpers\\bootstrap-project.ps1 -name "Moj_Projekt" -brain global -rag cloud
+.\\.ai\\scripts\\helpers\\bootstrap-project.ps1 -name "Moj_Projekt" -brain global -rag cloud
 ```
 
 _Zadana globalna putanja:_ `~/.agentbrain` (Windows) / `~/.agentrealm` (Linux)
@@ -51,7 +51,7 @@ _Zadana globalna putanja:_ `~/.agentbrain` (Windows) / `~/.agentrealm` (Linux)
 **Linux / macOS (Bash):**
 
 ```bash
-./ai/scripts/helpers/bootstrap-project.sh --name "Moj_Projekt" --brain global --rag cloud
+./.ai/scripts/helpers/bootstrap-project.sh --name "Moj_Projekt" --brain global --rag cloud
 ```
 
 _Zadana globalna putanja:_ `~/.agentrealm`
@@ -60,7 +60,7 @@ _Zadana globalna putanja:_ `~/.agentrealm`
 
 - **`none`**: Projekt je izoliran, ne koristi se dijeljeno znanje.
 - **`global`**: Koristi se SSOT direktorij u korisničkom profilu (`$HOME`). Ako direktorij ne postoji, AgentRealm će automatski pokušati povući (clonirati) **AgentBrain** repozitorij na tu lokaciju.
-- **`local`**: Brain se kreira unutar samog projekta (`ai/brain/`). Idealno za specifične istraživačke projekte.
+- **`local`**: Brain se kreira unutar samog projekta (`.ai/brain/`). Idealno za specifične istraživačke projekte.
 
 ---
 
@@ -70,16 +70,16 @@ AgentRealm koristi **Git Worktrees** za potpunu izolaciju zadataka. Agent nikada
 
 1.  **Start Task**: Kreiraj sandbox za novi zadatak.
     ```powershell
-    .\\ai\\scripts\\git\\new-task-worktree.ps1 "implement-feature-x"
+    .\\.ai\\scripts\\git\\new-task-worktree.ps1 "implement-feature-x"
     ```
 2.  **Delegate**: Pošalji agenta u akciju.
     ```powershell
-    .\\ai\\scripts\\agents\\run_claude_task.ps1 ai\\worktrees\\implement-feature-x
+    .\\.ai\\scripts\\agents\\run_claude_task.ps1 .ai\\worktrees\\implement-feature-x
     ```
 3.  **Review & Merge**: Provjeri rezultat i spoji u projekt.
     ```powershell
-    .\\ai\\scripts\\helpers\\check-all.ps1
-    .\\ai\\scripts\\git\\cleanup-worktrees.ps1 ai\\worktrees\\implement-feature-x
+    .\\.ai\\scripts\\helpers\\check-all.ps1
+    .\\.ai\\scripts\\git\\cleanup-worktrees.ps1 .ai\\worktrees\\implement-feature-x
     ```
 
 ---
