@@ -1,0 +1,22 @@
+name: "TBD Project"
+description: "Project created from agentic-workspace template"
+project_type: "seminar"
+default_ide: "vscode" # vscode | antigravity
+rag_mode: "none" # none | cloud | local
+stack:
+  languages: []
+  frameworks: []
+default_agents:
+  planner: "copilot-cli"
+  coder: "copilot-cli"
+  writer: "copilot-cli"
+  reviewer: "copilot-cli"
+skip_external_terminal: false
+paths:
+  state: "STATE.md"
+  agents: ".ai/config/AGENTS.md"
+  sources: "data/rag/sources"
+  tasks: "docs/seminar/01-task.md"
+  requirements: ".ai/config/requirements.list"
+  worktrees: ".ai/worktrees"
+  scripts: ".ai/scripts"

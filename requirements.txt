@@ -4,8 +4,8 @@
 #   --rag local   (heavyweight, uses local sentence-transformers model)
 #
 # RAG requirements are in:
-#   ai/config/requirements-rag-cloud.txt
-#   ai/config/requirements-rag-local.txt
+#   .ai/config/requirements-rag-cloud.txt
+#   .ai/config/requirements-rag-local.txt
 
 python-dotenv
 pyyaml

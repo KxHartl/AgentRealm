@@ -1,0 +1,8 @@
+# RAG Local Mode — Uses local sentence-transformers model (~1.2 GB footprint)
+# Install: pip install -r .ai/config/requirements-rag-local.txt
+
+# Include everything from cloud mode
+-r requirements-rag-cloud.txt
+
+# Local Embeddings (pulls PyTorch as dependency)
+sentence-transformers>=3.0

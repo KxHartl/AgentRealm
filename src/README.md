@@ -6,4 +6,4 @@
 - Project-specific implementations
 - Application source code
 
-> **Rule**: No template infrastructure, AI scripts, or automation code belongs here. That goes in `ai/`.
+> **Rule**: No template infrastructure, AI scripts, or automation code belongs here. That goes in `.ai/`.

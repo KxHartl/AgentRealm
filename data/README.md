@@ -9,7 +9,7 @@ Immutable reference material used by the CRAG pipeline to provide context to the
 | Subdirectory | Purpose |
 |---|---|
 | `sources/` | Original PDFs, textbooks, lecture slides |
-| `parsed/` | Clean Markdown extracted by `ai/ingestion/doc_parser.py` |
+| `parsed/` | Clean Markdown extracted by `.ai/ingestion/doc_parser.py` |
 | `vector_store/` | ChromaDB vector database (auto-generated) |
 
 > **Rule**: AI agents must NEVER write generated code, outputs, or operational data here.
