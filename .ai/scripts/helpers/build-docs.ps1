@@ -46,9 +46,18 @@ foreach ($file in $mdFiles) {
     $pdfName = $file.BaseName + ".pdf"
     $outputPath = Join-Path $distDir $pdfName
     
-    pandoc $file.FullName -o $outputPath --pdf-engine=pdflatex
+    # Custom FSB Seminar LaTeX compilation if inside seminar and helper exists
+    $seminarTemplate = Join-Path $rootDir ".ai/templates/fsb-seminar/latex/seminar.tex"
+    $compilerScript = Join-Path $rootDir ".ai/scripts/helpers/compile_seminar.py"
     
-    if ($LASTEXITCODE -eq 0) {
+    if ($file.FullName -match "seminar" -and (Test-Path $seminarTemplate) -and (Test-Path $compilerScript)) {
+        Write-Host "FSB Seminar detected! Utilizing Auto-LaTeX compiler with templates..." -ForegroundColor Green
+        python $compilerScript $file.FullName $seminarTemplate $outputPath
+    } else {
+        pandoc $file.FullName -o $outputPath --pdf-engine=pdflatex
+    }
+    
+    if ($LASTEXITCODE -eq 0 -or (Test-Path $outputPath)) {
         Write-Host "✅ Success: $pdfName generated in dist/" -ForegroundColor Green
     } else {
         Write-Host "❌ Failed to convert $($file.Name)" -ForegroundColor Red

@@ -66,7 +66,7 @@ cat <<EOF > STATE.md
 ## Project info
 
 - Name: ${project_name}
-- Type: seminar
+- Type: project
 - Owner: $(whoami)
 
 ## Requirements
@@ -147,8 +147,32 @@ fi
 
 # Update README.md
 if [[ -f README.md ]]; then
-  sed -i "s/^# AgentRealm/# ${project_name}/" README.md
-  sed -i "s/Universal template for \*\*projects, seminars, and research\*\*/Project for **${project_name}**, built using AgentRealm template/" README.md
+  echo "Creating clean project README.md..."
+  cat <<EOF > README.md
+# ${project_name}
+
+## Overview
+Project **${project_name}**, initialized via AgentRealm template.
+
+## Directory Structure
+- \`src/\`: Source code and project scripts.
+- \`docs/\`: Documentation and LaTeX files.
+- \`data/\`: Datasets and RAG sources.
+- \`.ai/\`: AgentRealm engine (infrastructure).
+
+## Getting Started
+Check \`STATE.md\` for current progress, tasks, and project goals.
+EOF
+fi
+
+# Clear IDEAS.md
+if [[ -f IDEAS.md ]]; then
+  echo "Resetting IDEAS.md..."
+  cat <<EOF > IDEAS.md
+# ${project_name} - Roadmap & Ideas (Untracked)
+
+This file is not tracked by Git. Use it for personal ideas, brainstorms, and plans for ${project_name}.
+EOF
 fi
 
 mkdir -p .ai/worktrees
@@ -188,9 +212,46 @@ if [[ -n "$PY_CMD" ]]; then
   elif [[ "$rag" == "local" ]]; then
     echo "Installing RAG Local dependencies..."
     $PIP_CMD install -r .ai/config/requirements-rag-local.txt
+
+    # Local LLM Orchestration: Detect and check Ollama
+    echo "Checking for Local LLM Orchestrator (Ollama)..."
+    if command -v ollama >/dev/null 2>&1; then
+      echo "Ollama detected: $(command -v ollama)"
+      if ! pgrep -x "ollama" >/dev/null; then
+        echo "Warning: Ollama is installed but not running. Please start Ollama to run offline LLMs."
+      fi
+    else
+      echo "Ollama not found. It is recommended for local RAG."
+      echo "You can download it from https://ollama.com/"
+    fi
+  fi
+
+  # Add Tracing placeholders to .env
+  if [[ -f .env ]]; then
+    if ! grep -q "LANGSMITH_TRACING=" .env; then
+      cat <<EOF >> .env
+
+# Tracing (LangSmith / Langfuse)
+LANGSMITH_TRACING=false
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com
+LANGSMITH_API_KEY=YOUR_LANGSMITH_API_KEY
+LANGSMITH_PROJECT=agentrealm-${project_name}
+EOF
+      echo "Added LangSmith tracing scaffolding to .env."
+    fi
   fi
 else
   echo "Warning: Python not found or invalid (Microsoft Store stub?). Skipping venv setup."
+fi
+
+# 6. Sever connection to template (Reset Git)
+if [[ -d .git ]]; then
+  echo "Resetting git repository to sever connection with template..."
+  rm -rf .git
+  git init
+  git add .
+  git commit -m "Initial commit for ${project_name}" >/dev/null
+  echo "Git repository reset."
 fi
 
 echo ""
