@@ -1,0 +1,22 @@
+# RAG Cloud Mode — Uses Gemini API for embeddings (~200 MB footprint)
+# Install: pip install -r .ai/config/requirements-rag-cloud.txt
+
+# RAG Orchestration
+langchain>=0.3
+langchain-community>=0.3
+langchain-google-genai>=2.0
+langgraph>=0.2
+
+# Vector Store
+chromadb>=0.5
+
+# Document Loaders
+pypdf>=4.0
+langchain-text-splitters>=0.3
+
+# Web Search (CRAG fallback)
+tavily-python>=0.5
+
+# Online Web & Video Scraping
+beautifulsoup4>=4.12
+youtube-transcript-api>=0.6

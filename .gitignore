@@ -43,10 +43,10 @@ IDEAS.md
 TODO.md
 
 # Agent sandboxes (worktrees are created/removed dynamically)
-ai/worktrees/
-ai/worktrees/*/node_modules/
-ai/worktrees/*/.venv/
-ai/worktrees/*/build/
+.ai/worktrees/
+.ai/worktrees/*/node_modules/
+.ai/worktrees/*/.venv/
+.ai/worktrees/*/build/
 
 # RAG vector store (large, auto-generated)
 data/rag/vector_store/

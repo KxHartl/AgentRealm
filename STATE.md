@@ -8,18 +8,25 @@
 
 ## Requirements
 
-- Manifest: `ai/config/requirements.list`
-- Check command: `ai/scripts/helpers/check-requirements.[ps1|sh]`
-- Worktree Root: `ai/worktrees/rag-improvements`
+- Manifest: `.ai/config/requirements.list`
+- Check command: `.ai/scripts/helpers/check-requirements.[ps1|sh]`
 - Installation status: _Not checked yet._
 
 ## Current focus
-- v3-enterprise-hardening
+- brain-evolution
+- workflow-dx
+- priority-improvements
+- rag-improvements (V3.1): Advanced RAG optimization, reranking, and evaluation.
 
-- **AgentRealm V3.0**: Enterprise Guardrails, Advanced RAG (Fusion/Rerank), and Evaluation Pipeline.
+- **AgentRealm V3.1**: Improving retrieval accuracy with RAG Fusion, implementing Cross-Encoder reranking, and establishing an automated evaluation pipeline.
 
 ## Backlog
 
+- [x] **RAG Improvements**
+  - [x] Implement Semantic Caching in `cache.py`.
+  - [x] Implement Multi-modal Document Parsing in `vision_parser.py`.
+  - [x] Add Local LLM Orchestration scaffolding to `bootstrap-project.ps1`.
+  - [x] Add Tracing (LangSmith) scaffolding to `.env`.
 - [ ] Test RAG Evaluation Pipeline with real-world scenarios.
 - [ ] Implement automated Cross-Encoder setup in bootstrap.
 - [ ] Refine QA Reviewer agent prompts for specific languages.

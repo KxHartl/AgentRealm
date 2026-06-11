@@ -1,0 +1,9 @@
+skills:
+  - name: format_markdown_table
+    type: writing
+    entrypoint: .ai/skills/local/format_markdown_table.py
+    preferred_agent: copilot-cli
+  - name: export_docx
+    type: document
+    entrypoint: .ai/skills/local/export_docx.sh
+    preferred_agent: claude-code
