@@ -10,6 +10,8 @@ Builds:      data/rag/vector_store/  (local project ChromaDB)
 
 import os
 import sys
+import time
+import shutil
 import re
 import urllib.request
 from typing import List
@@ -150,7 +152,10 @@ def load_sources() -> List[Document]:
                         doc.metadata["source_type"] = "project_data"
                         doc.metadata["origin"] = "local_rag"
                     documents.extend(docs)
-                    print(f"    + {os.path.relpath(filepath, _WORKSPACE_ROOT)}")
+                    try:
+                        print(f"    + {os.path.relpath(filepath, _WORKSPACE_ROOT)}")
+                    except UnicodeEncodeError:
+                        print(f"    + {os.path.basename(filepath)} (Unicode path)")
 
         # 1.5 Load Online Web & Video Links
         links_file = os.path.join(_SOURCES_DIR, "links.txt")
@@ -186,7 +191,10 @@ def load_sources() -> List[Document]:
                         doc.metadata["source_type"] = "project_knowledge"
                         doc.metadata["origin"] = "local_ai"
                     documents.extend(docs)
-                    print(f"    + {os.path.relpath(filepath, _WORKSPACE_ROOT)}")
+                    try:
+                        print(f"    + {os.path.relpath(filepath, _WORKSPACE_ROOT)}")
+                    except UnicodeEncodeError:
+                        print(f"    + {os.path.basename(filepath)} (Unicode path)")
 
     # 3. Load Global AgentBrain Knowledge
     print(f"  Scanning Global Brain: {_GLOBAL_BRAIN_DIR}...")
@@ -205,7 +213,10 @@ def load_sources() -> List[Document]:
                         doc.metadata["source_type"] = "global_skill"
                         doc.metadata["origin"] = "agentbrain"
                     documents.extend(docs)
-                    print(f"    + [Global] {f}")
+                    try:
+                        print(f"    + [Global] {f}")
+                    except UnicodeEncodeError:
+                        print("    + [Global] (Unicode filename)")
     else:
         print(f"  Warning: Global Brain not found at {_GLOBAL_BRAIN_DIR}.")
 
@@ -246,6 +257,11 @@ def save_parsed_markdown(documents: List[Document]) -> None:
 
 def build_vector_store(documents: List[Document]) -> None:
     """Chunk documents and build ChromaDB vector store."""
+    # Cleanup: Remove old vector store to avoid duplicates/corruption
+    if os.path.exists(_VECTOR_STORE_DIR):
+        print(f"  Cleaning up old vector store at {_VECTOR_STORE_DIR}...")
+        shutil.rmtree(_VECTOR_STORE_DIR)
+
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=150,
@@ -255,11 +271,28 @@ def build_vector_store(documents: List[Document]) -> None:
     print(f"  Split into {len(chunks)} chunks.")
 
     embeddings = get_embeddings()
-    Chroma.from_documents(
-        documents=chunks,
-        embedding=embeddings,
-        persist_directory=_VECTOR_STORE_DIR,
-    )
+    
+    # Batching & Rate Limiting for Gemini Free Tier
+    batch_size = 40
+    print(f"  Building vector store in batches of {batch_size}...")
+    
+    vector_store = None
+    for i in range(0, len(chunks), batch_size):
+        batch = chunks[i:i + batch_size]
+        if vector_store is None:
+            vector_store = Chroma.from_documents(
+                documents=batch,
+                embedding=embeddings,
+                persist_directory=_VECTOR_STORE_DIR,
+            )
+        else:
+            vector_store.add_documents(batch)
+        
+        print(f"    - Processed {min(i + batch_size, len(chunks))}/{len(chunks)} chunks")
+        if i + batch_size < len(chunks):
+            # Pause to avoid 429 RESOURCE_EXHAUSTED
+            time.sleep(12)
+
     print(f"  Vector store built at: {_VECTOR_STORE_DIR}")
 
 

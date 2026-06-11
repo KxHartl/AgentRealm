@@ -29,7 +29,7 @@ while ($true) {
     $question = Read-Host "You"
     if ($question -eq "quit" -or $question -eq "exit") { break }
     if ([string]::IsNullOrWhiteSpace($question)) { continue }
-
-    & $PythonExe -c "import sys; sys.path.insert(0, '$($rootDir -replace '\\','/')'); from ai.rag_core.graph import query; print(query('$($question -replace \"'\",\"''\")'))"
+    $cleanRootDir = $rootDir -replace '\\','/'
+    & $PythonExe -c "import sys; sys.path.insert(0, '$cleanRootDir'); hasattr(sys.stdout, 'reconfigure') and sys.stdout.reconfigure(encoding='utf-8'); from ai.rag_core.graph import query; print(query(sys.argv[1]))" $question
     Write-Host ""
 }

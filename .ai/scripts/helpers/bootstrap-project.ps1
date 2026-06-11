@@ -117,10 +117,11 @@ if ($brain -ne "none") {
     $envPath = ".env"
     if (Test-Path $envPath) {
         $content = Get-Content $envPath
+        $envBrainPath = $brainPath -replace '\\', '/'
         if ($content -match "GLOBAL_BRAIN_PATH=") {
-            $content = $content -replace "GLOBAL_BRAIN_PATH=.*", "GLOBAL_BRAIN_PATH=$brainPath"
+            $content = $content -replace "GLOBAL_BRAIN_PATH=.*", "GLOBAL_BRAIN_PATH=$envBrainPath"
         } else {
-            $content += "GLOBAL_BRAIN_PATH=$brainPath"
+            $content += "GLOBAL_BRAIN_PATH=$envBrainPath"
         }
         $content | Set-Content $envPath
     }

@@ -3,10 +3,14 @@
 Flow: Retrieve -> Grade Documents -> (Conditional: Web Search) -> Generate
 """
 
+from dotenv import load_dotenv
 from langgraph.graph import StateGraph, END
 
 from .state import GraphState
 from .nodes import retrieve, grade_documents, web_search, generate, decide_to_search
+
+# Load environment variables
+load_dotenv()
 
 
 def build_graph() -> StateGraph:
@@ -73,6 +77,10 @@ def query(question: str) -> str:
 
 if __name__ == "__main__":
     import sys
+    
+    # Configure UTF-8 output for Windows console
+    if sys.platform == "win32":
+        sys.stdout.reconfigure(encoding='utf-8')
 
     if len(sys.argv) < 2:
         print("Usage: python -m ai.rag_core.graph <question>")
